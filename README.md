@@ -1,3 +1,3 @@
-Repo
-nie wiem jak to zrobilam tbh
-edit: juz wiem, git jest git
+Repo /n
+nie wiem jak to zrobilam tbh /n
+edit: juz wiem, git jest git /n

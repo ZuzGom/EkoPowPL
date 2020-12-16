@@ -1,3 +1,2 @@
-Repo /n
-nie wiem jak to zrobilam tbh /n
-edit: juz wiem, git jest git /n
+plik tablice by ZuzGom
+~wszytskie funkcje i metody które nagromadziłam podczas mojej przygody z pythonem

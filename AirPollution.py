@@ -44,12 +44,30 @@ def findWater():
     #print(NDWIsuma)
 
 
-
+######################_MAIN_######################
 
 BrightnessSum,pixelCounter=findWater()
 
 if pixelCounter!=0:
-    print(BrightnessSum/pixelCounter)
+    averageWaterBrightness=BrightnessSum/pixelCounter
+else:
+    print("BOOOOM!")
+
+#AlbedoREL=B_unknown/B_reference
+B_unknown=0 # PL:do policzenia
+AlbedoREL=B_unknown/averageWaterBrightness
+print(averageWaterBrightness)
+print(AlbedoREL)
+
+#AlbedoABS=0.08/AlbedoREL
+
+AlbedoABS=0.18*AlbedoREL
+print(AlbedoABS*100)
+
+##################################################
+
+
+
 
 
 temp.save("ProcessedL.jpg")  # saves picture

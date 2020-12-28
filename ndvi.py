@@ -33,7 +33,7 @@ def NDVIconvert():
             R,G,B = pixelRGB
 
             # ~via Kuba Frączek
-            Brightness = sum([R, G, B]) / 3  ##0 is dark (black) and 255 is bright (white)
+            Brightness = sum(pixelRGB) / 3  #0 is dark (black) and 255 is bright (white)
 
             if Brightness < 35:
                 pixels[X, Y] = (0, 0, 0) # shadows off
@@ -49,11 +49,13 @@ def NDVIconvert():
                     ndviSum.append(NDVI) # add index value to the list t.b.c.
 
                     # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
-                    NDVI = int((NDVI+0.15) * 500) # then I multiply it by 500 to make a good contrast
+                    NDVI = int((NDVI+0.15) * 500)  # then I multiply it by 500 to make a good contrast
+                    # it cannot be float, because hsv and rgb can't read that ;c
 
-                    pixels[X, Y] = (NDVI, NDVI, NDVI) # one picture in GRAYSCALE
+                    pixels[X, Y] = (NDVI, NDVI, NDVI)  # one picture in GRAYSCALE
                     pixels1[X, Y] = (NDVI, 200, 200)
                     # and one picture in HSL, in which H is NDVI, so index value is one color of the scpectrum
+                    # i figured it out by myself ngl
 
     avg = sum(ndviSum)/len(ndviSum) # average ndvi value on the picture
     return avg, max(ndviSum)

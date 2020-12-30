@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont  # Pillow library
 i = 14
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
 # jesli chce prztestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1ndvi, 1hsl itd...
-# reszta kometarzy po angieslku zeby nie bylo wam za latwo ;p
+# reszta kometarzy po angielsku zeby nie bylo wam za latwo ;p
 
 img = Image.open("imgtest\\img"+str(i)+".jpg")
 

@@ -2,9 +2,8 @@
 
 # UWAGA! używam słów hsl i hsv wymiennie nie pomylcie się :3
 
-from PIL import Image, ImageDraw  # Pillow library
-
-i = 13
+from PIL import Image, ImageDraw, ImageFont  # Pillow library
+i = 14
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
 # jesli chce prztestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1ndvi, 1hsl itd...
 # reszta kometarzy po angieslku zeby nie bylo wam za latwo ;p
@@ -56,47 +55,55 @@ def NDVIconvert():
 
                     ndviSum.append(NDVI)  # add index value to the list t.b.c.
 
-                    NDVI = con(NDVI)  # nice contrast
+                    NDVI = con(NDVI)
 
                     pixels[X, Y] = (NDVI, NDVI, NDVI)  # one picture in GRAYSCALE
                     pixels1[X, Y] = (NDVI, 200, 200)
                     # and one picture in HSL, in which H is NDVI, so index value is one color of the scpectrum
                     # i figured it out by myself ngl
     print('gon')
-
     # ####### skala ######
 
+    s = int((h-100)/200)  # skala skali (sprawdzam ile razy w h miesci sie dlugosc skali)
+    if s > 1:
+        s -= 1  # zmiejszam i tak
+
+    font = ImageFont.truetype("arial.ttf", 2+s*10)
+
     # creating scale bar
-    for x in range(w-20, w-10):
+    for x in range(w-10 - s*10, w-10):
         n = -0.2
-        for y in range(100, 300):
+        for y in range(100, s*200+100):
             nv = con(n)  # the same contrast as at picture
             pixels[x, y] = (nv, nv, nv)
             pixels1[x, y] = (nv, 200, 200)
-            n += 0.003
+            if n>0.4:
+                pixels1[x - s * 30, y] = (nv, 200, 200)
+            n += 0.003/s
 
-    ss = 32  # skala skali
-    hh = 100 - 2 # pocztątek tekstu skali
+    ss = 32 * s  # odstępy między numerami
+    hh = 100 - 2  # początek skali
 
-    # scale on the hsv picture
+    # scale text on the hsv picture
     zo = ImageDraw.Draw(out)
-    zo.text((w-43, hh),            "-.2",   (0, 0, 200))
-    zo.text((w-43, hh + 1 * ss),   "-.1",   (0, 0, 200))
-    zo.text((w-30, hh + 2 * ss),   "0",     (0, 0, 200))
-    zo.text((w-37, hh + 3 * ss),   ".1",    (0, 0, 200))
-    zo.text((w-37, hh + 4 * ss),   ".2",    (0, 0, 200))
-    zo.text((w-37, hh + 5 * ss),   ".3",    (0, 0, 200))
-    zo.text((w-37, hh + 6 * ss),   ".4",    (0, 0, 200))
+    zo.text((w - 13 - s * 30, hh),            "-.2",   (0, 0, 200), font=font)
+    zo.text((w - 13 - s * 30, hh + 1 * ss),   "-.1",   (0, 0, 200), font=font)
+    zo.text((w - 3 - s * 30, hh + 2 * ss),    "0",     (0, 0, 200), font=font)
+    zo.text((w - 7 - s * 30, hh + 3 * ss),    ".1",    (0, 0, 200), font=font)
+    zo.text((w - 7 - s * 30, hh + 4 * ss),    ".2",    (0, 0, 200), font=font)
+    zo.text((w - 7 - s * 30, hh + 5 * ss),    ".3",    (0, 0, 200), font=font)
+    zo.text((w - 7 - s * 30, hh + 6 * ss),    ".4",    (0, 0, 200), font=font)
 
     # scale on the grayscale picture
     za = ImageDraw.Draw(temp)
-    za.text((w - 43, hh),          "-.2", (255, 255, 255))
-    za.text((w - 43, hh + 1 * ss), "-.1", (255, 255, 255))
-    za.text((w - 30, hh + 2 * ss), "0",   (255, 255, 255))
-    za.text((w - 37, hh + 3 * ss), ".1",  (255, 255, 255))
-    za.text((w - 37, hh + 4 * ss), ".2",  (255, 255, 255))
-    za.text((w - 37, hh + 5 * ss), ".3",  (255, 255, 255))
-    za.text((w - 37, hh + 6 * ss), ".4",  (255, 255, 255))
+    za.text((w - 13 - s * 30, hh),            "-.2",   (255, 255, 255), font=font)
+    za.text((w - 13 - s * 30, hh + 1 * ss),   "-.1",   (255, 255, 255), font=font)
+    za.text((w - 3 - s * 30, hh + 2 * ss),    "0",     (255, 255, 255), font=font)
+    za.text((w - 7 - s * 30, hh + 3 * ss),    ".1",    (255, 255, 255), font=font)
+    za.text((w - 7 - s * 30, hh + 4 * ss),    ".2",    (255, 255, 255), font=font)
+    za.text((w - 7 - s * 30, hh + 5 * ss),    ".3",    (255, 255, 255), font=font)
+    za.text((w - 7 - s * 30, hh + 6 * ss),    ".4",    (255, 255, 255), font=font)
+
 
     avg = sum(ndviSum)/len(ndviSum)  # average ndvi value on the picture
     print(min(ndviSum))

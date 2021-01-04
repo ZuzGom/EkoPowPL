@@ -5,14 +5,13 @@
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
 import matplotlib.pyplot as plt
 
+
 def NDVIconvert(img):
+    def operation(code, name, img, con):
+        # I get height and widith of the image
+        w, h = img.size
 
-    # I get height and widith of image
-    w, h = img.size
-
-    def operation(code, img):
         index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
-
 
         img_rgb = img.convert('RGB')
         index_bw = img_rgb.copy()  # creating copy, so it won't overwrite original picture
@@ -22,12 +21,6 @@ def NDVIconvert(img):
 
         # checking every single pixel
         indexSum = []  # list of every pixel's index index
-
-        def con(v):  # contrast function
-            # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
-            # then I multiply it by 500 to make a good contrast
-            # it cannot be float, because hsv and rgb can't read that ;c
-            return int((v + 0.2) * 400)
 
         for X in range(0, w):  # widith
             for Y in range(0, h):  # height
@@ -55,8 +48,8 @@ def NDVIconvert(img):
                         # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
                         # i figured it out by myself ngl
 
-
         print('zdjęcie nr. ' + str(i))
+
         # ####### skala ######
 
         s = int((h - 100) / 200)  # skala skali (sprawdzam ile razy w h miesci sie dlugosc skali)
@@ -65,20 +58,19 @@ def NDVIconvert(img):
 
         font = ImageFont.truetype("arial.ttf", 2 + s * 10)
 
-        def skala(im_b, px_b, im_c, px_c):
-            for x in range(w - 10 - s * 10, w - 10):
-                n = -0.2
-                for y in range(100, s * 200 + 100):
-                    nv = con(n)  # the same contrast as at picture
-                    px_b[x, y] = (nv, nv, nv)
-                    px_c[x, y] = (nv, 200, 200)
-                    n += 0.003 / s
+        for x in range(w - 10 - s * 10, w - 10):
+            n = -0.2
+            for y in range(100, s * 200 + 100):
+                nv = con(n)  # the same contrast as at picture
+                px_index_bw[x, y] = (nv, nv, nv)
+                px_index_col[x, y] = (nv, 200, 200)
+                n += 0.003 / s
 
             ss = 32 * s  # odstępy między numerami
             hh = 100 - 2  # początek skali
 
             # scale text on the hsv picture
-            zo = ImageDraw.Draw(im_c)
+            zo = ImageDraw.Draw(index_col)
             zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
             zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
             zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
@@ -88,7 +80,7 @@ def NDVIconvert(img):
             zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
 
             # scale on the grayscale picture
-            za = ImageDraw.Draw(im_b)
+            za = ImageDraw.Draw(index_bw)
             za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
             za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
             za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
@@ -104,32 +96,38 @@ def NDVIconvert(img):
             - ...
             '''
 
-        skala(index_bw, px_index_bw, index_col, px_index_col)
-        return index_bw, index_col
+        # I changed it, so NDVIconvert is separated function, which can be called on any picture
 
+        # nie moge zapisac w formacie hsl ;c (hsv my mistake)
+        # zapisuje w moim formacie:
+        index_bw.save("comp\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_col.convert("RGB").save("comp\\" + str(i) + "_col_" + name + ".jpg")  # saves picture in color scale
 
-    def ndvi(r,g,b):
+    def ndvi(r, g, b):
         if (r + b) != 0:  # avoids division by zero
             ix = (r - b) / (r + b)
         else:
             ix = (r - b) / 1
         return ix
 
-    def ndwi(r,g,b):
+    def ndwi(r, g, b):
         if (r + g) != 0:  # avoids division by zero
             ix = (r - g) / (r + g)
         else:
             ix = (r - g) / 1
         return ix
 
-    ndvi_bw, ndvi_col = operation(ndvi, img)
-    ndwi_bw, ndwi_col = operation(ndwi, img)
+    def cndvi(v):  # contrast function
+        # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
+        # then I multiply it by 500 to make a good contrast
+        # it cannot be float, because hsv and rgb can't read that ;c
+        return int((v + 0.2) * 400)
 
-    # creating scale bar
+    def cndwi(v):
+        return int((v + 0.2) * 550)
 
-
-
-    return ndvi_bw, ndvi_col, ndwi_bw, ndwi_col
+    operation(ndvi, 'ndvi', img, cndvi)
+    operation(ndwi, 'ndwi', img, cndwi)
 
 
 # #####################_MAIN_######################
@@ -144,16 +142,11 @@ for x in range(14, 15):
     image = Image.open("imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
-    ndvi_bw, ndvi_col, ndwi_bw, ndwi_col = NDVIconvert(image)
+    NDVIconvert(image)
     # I changed it, so NDVIconvert is separated function, which can be called on any picture
 
     # nie moge zapisac w formacie hsl ;c (hsv my mistake)
     # zapisuje w moim formacie:
-    ndvi_bw.save("comp\\" + str(i) + "_bw_ndvi.jpg")  # saves picture in grayscale
-    ndvi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndvi.jpg")  # saves picture in color scale
-
-    ndwi_bw.save("comp\\" + str(i) + "_bw_ndwi.jpg")  # saves picture in grayscale
-    ndwi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndwi.jpg")  # saves picture in color scale
 
     image.save("comp\\" + str(i) + "_org.jpg")  # saves original picture to compare
 

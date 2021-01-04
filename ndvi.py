@@ -10,24 +10,18 @@ def NDVIconvert(img):
     # I get height and widith of image
     w, h = img.size
 
-    def operation(index):
-        ndvi_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
-        ndwi_col = img.copy().convert('HSV')
+    def operation(code, img):
+        index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
 
-        img = img.convert('RGB')
-        ndvi_bw = img.copy()  # creating copy, so it won't overwrite original picture
 
-        px_ndvi_bw = ndvi_bw.load()  # I get pixel information of copied picture
-        px_ndvi_col = ndvi_col.load()  # and hsl one
+        img_rgb = img.convert('RGB')
+        index_bw = img_rgb.copy()  # creating copy, so it won't overwrite original picture
 
-        ndwi_bw = img.copy()
-
-        px_ndwi_bw = ndwi_bw.load()  # I get pixel information of copied picture
-        px_ndwi_col = ndwi_col.load()  # and hsl one
+        px_index_bw = index_bw.load()  # I get pixel information of copied picture
+        px_index_col = index_col.load()  # and hsl one
 
         # checking every single pixel
-        ndviSum = []  # list of every pixel's ndvi index
-        ndwiSum = []
+        indexSum = []  # list of every pixel's index index
 
         def con(v):  # contrast function
             # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
@@ -37,7 +31,7 @@ def NDVIconvert(img):
 
         for X in range(0, w):  # widith
             for Y in range(0, h):  # height
-                pixelRGB = img.getpixel((X, Y))  # Get pixel's RGB values
+                pixelRGB = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
 
                 r, g, b = pixelRGB
 
@@ -45,36 +39,22 @@ def NDVIconvert(img):
                 Brightness = sum(pixelRGB) / 3  # 0 is dark (black) and 255 is bright (white)
 
                 if Brightness < 35:
-                    px_ndvi_bw[X, Y] = (0, 0, 0)  # shadows off
+                    px_index_bw[X, Y] = (0, 0, 0)  # shadows off
                 else:
                     if Brightness > 200:
-                        px_ndvi_bw[X, Y] = (255, 255, 255)  # clouds off
+                        px_index_bw[X, Y] = (255, 255, 255)  # clouds off
                     else:
-                        if (r + b) != 0:  # avoids division by zero
-                            ndvi = (r - b) / (r + b)
-                        else:
-                            ndvi = (r - b) / 1
 
-                        ndviSum.append(ndvi)  # add index value to the list t.b.c.
+                        index = code(r, g, b)
+                        indexSum.append(index)  # add index value to the list t.b.c.
 
-                        ndvi = con(ndvi)  # a nice contrast
+                        index = con(index)  # a nice contrast
 
-                        px_ndvi_bw[X, Y] = (ndvi, ndvi, ndvi)  # one picture in GRAYSCALE
-                        px_ndvi_col[X, Y] = (ndvi, 200, 200)
-                        # and one picture in HSL, in which H is ndvi, so index value is one color of the scpectrum
+                        px_index_bw[X, Y] = (index, index, index)  # one picture in GRAYSCALE
+                        px_index_col[X, Y] = (index, 200, 200)
+                        # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
                         # i figured it out by myself ngl
 
-                        if (r + g) != 0:  # avoids division by zero
-                            ndwi = (r - g) / (r + g)
-                        else:
-                            ndwi = (r - g) / 1
-
-                        ndwiSum.append(ndwi)  # add index value to the list t.b.c.
-
-                        ndwi = con(ndwi)  # a nice contrast
-
-                        px_ndwi_bw[X, Y] = (ndwi, ndwi, ndwi)  # one picture in GRAYSCALE
-                        px_ndwi_col[X, Y] = (ndwi, 200, 200)
 
         print('zdjęcie nr. ' + str(i))
         # ####### skala ######
@@ -124,18 +104,31 @@ def NDVIconvert(img):
             - ...
             '''
 
-        skala(ndvi_bw, px_ndvi_bw, ndvi_col, px_ndvi_col)
-        skala(ndwi_bw, px_ndwi_bw, ndwi_col, px_ndwi_col)
+        skala(index_bw, px_index_bw, index_col, px_index_col)
+        return index_bw, index_col
 
 
+    def ndvi(r,g,b):
+        if (r + b) != 0:  # avoids division by zero
+            ix = (r - b) / (r + b)
+        else:
+            ix = (r - b) / 1
+        return ix
+
+    def ndwi(r,g,b):
+        if (r + g) != 0:  # avoids division by zero
+            ix = (r - g) / (r + g)
+        else:
+            ix = (r - g) / 1
+        return ix
+
+    index_bw, index_col = operation(ndvi, img)
 
     # creating scale bar
 
-    plt.plot(ndviSum, linewidth=0.5)
-    plt.ylabel('ndvi_avg')
-    #plt.savefig("testout\\"+str(i)+"_plotg.png")
 
-    return ndviSum, ndvi_bw, ndvi_col, ndwi_bw, ndwi_col
+
+    return index_bw, index_col
 
 
 # #####################_MAIN_######################
@@ -145,27 +138,18 @@ def NDVIconvert(img):
 # reszta kometarzy po angielsku zeby nie bylo wam za latwo ;p
 
 for x in range(14, 15):
-    i = 3
+    i = ''
 
     image = Image.open("imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
-    ndviSum, ndvi_bw, ndvi_col, ndwi_bw, ndwi_col = NDVIconvert(image)
+    ndvi_bw, ndvi_col = NDVIconvert(image)
     # I changed it, so NDVIconvert is separated function, which can be called on any picture
-
-    print(min(ndviSum))
-    print(sum(ndviSum) / len(ndviSum))  # average NDVI value on the picture
-    print(max(ndviSum))
 
     # nie moge zapisac w formacie hsl ;c (hsv my mistake)
     # zapisuje w moim formacie:
     ndvi_bw.save("comp\\" + str(i) + "_bw_ndvi.jpg")  # saves picture in grayscale
     ndvi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndvi.jpg")  # saves picture in color scale
-
-    ndwi_bw.save("comp\\" + str(i) + "_bw_ndwi.jpg")  # saves picture in grayscale
-    ndwi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndwi.jpg")  # saves picture in color scale
-
-
 
 
     image.save("comp\\" + str(i) + "_org.jpg")  # saves original picture to compare

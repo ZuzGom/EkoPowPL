@@ -122,13 +122,14 @@ def NDVIconvert(img):
             ix = (r - g) / 1
         return ix
 
-    index_bw, index_col = operation(ndvi, img)
+    ndvi_bw, ndvi_col = operation(ndvi, img)
+    ndwi_bw, ndwi_col = operation(ndwi, img)
 
     # creating scale bar
 
 
 
-    return index_bw, index_col
+    return ndvi_bw, ndvi_col, ndwi_bw, ndwi_col
 
 
 # #####################_MAIN_######################
@@ -138,12 +139,12 @@ def NDVIconvert(img):
 # reszta kometarzy po angielsku zeby nie bylo wam za latwo ;p
 
 for x in range(14, 15):
-    i = ''
+    i = 3
 
     image = Image.open("imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
-    ndvi_bw, ndvi_col = NDVIconvert(image)
+    ndvi_bw, ndvi_col, ndwi_bw, ndwi_col = NDVIconvert(image)
     # I changed it, so NDVIconvert is separated function, which can be called on any picture
 
     # nie moge zapisac w formacie hsl ;c (hsv my mistake)
@@ -151,6 +152,8 @@ for x in range(14, 15):
     ndvi_bw.save("comp\\" + str(i) + "_bw_ndvi.jpg")  # saves picture in grayscale
     ndvi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndvi.jpg")  # saves picture in color scale
 
+    ndwi_bw.save("comp\\" + str(i) + "_bw_ndwi.jpg")  # saves picture in grayscale
+    ndwi_col.convert("RGB").save("comp\\" + str(i) + "_col_ndwi.jpg")  # saves picture in color scale
 
     image.save("comp\\" + str(i) + "_org.jpg")  # saves original picture to compare
 

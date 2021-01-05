@@ -3,8 +3,7 @@
 # UWAGA! używam słów hsl i hsv wymiennie nie pomylcie się :3
 
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
-
-# import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 '''
@@ -63,7 +62,7 @@ def NDVIconvert(img):
                     index = con(index)  # a nice, suitable contrast
 
                     px_index_bw[X, Y] = (
-                        index, index, index)  # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
+                    index, index, index)  # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
                     px_index_col[X, Y] = (index, 200, 200)
                     # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
                     # i figured it out by myself ngl
@@ -89,6 +88,8 @@ def NDVIconvert(img):
                 s -= 1
         font = ImageFont.truetype("arial.ttf", 2 + s * 10)
 
+
+
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
             for y in range(beg, end):
@@ -97,35 +98,35 @@ def NDVIconvert(img):
                 px_index_col[x, y] = (nv, 200, 200)
                 n += 0.003 / s
 
-            ss = 32 * s  # odstępy między numerami
-            hh = 100 - 2  # początek skali
+        ss = 32 * s  # odstępy między numerami
+        hh = 100 - 2  # początek skali
 
-            # scale text on the hsv picture
-            zo = ImageDraw.Draw(index_col)
-            zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
-            zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
-            zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 3 * ss), ".1", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 4 * ss), ".2", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 5 * ss), ".3", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
+        # scale text on the hsv picture
+        zo = ImageDraw.Draw(index_col)
+        zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
+        zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
+        zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 3 * ss), ".1", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 4 * ss), ".2", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 5 * ss), ".3", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
 
-            # scale on the grayscale picture
-            za = ImageDraw.Draw(index_bw)
-            za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
-            za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
-            za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 3 * ss), ".1", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 4 * ss), ".2", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
+        # scale on the grayscale picture
+        za = ImageDraw.Draw(index_bw)
+        za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
+        za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
+        za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 3 * ss), ".1", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 4 * ss), ".2", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
 
-            '''
-            what scale does:
-            - fits to any picture above 300 px height
-            - change its value according to contrast on the picture
-            - ...
-            '''
+        '''
+        what scale does:
+        - fits to any picture above 300 px height
+        - change its value according to contrast on the picture
+        - ...
+        '''
 
         # nie moge zapisac w formacie hsl ;c (hsv my mistake)
         # zapisuje w moim formacie:
@@ -136,6 +137,8 @@ def NDVIconvert(img):
         print(min(indexSum))
         print(sum(indexSum) / len(indexSum))
         print(max(indexSum))
+
+
 
     class Code:
 
@@ -193,6 +196,8 @@ def NDVIconvert(img):
             ix = 3.14159 * (g * g - r * b) / (g * g + r * b)
             return ix
 
+
+
     # contrast function
     # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
     # then I multiply it by 500 to make a good contrast
@@ -203,8 +208,9 @@ def NDVIconvert(img):
     def con(add, multi):
         def conx(v):
             return int((v + add) * multi)
-
         return conx
+
+
 
     # IMPORTANT! comment if needen't:
 

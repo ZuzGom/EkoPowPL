@@ -3,18 +3,39 @@
 # UWAGA! używam słów hsl i hsv wymiennie nie pomylcie się :3
 
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
-import matplotlib.pyplot as plt
+
+# import matplotlib.pyplot as plt
+
+
+'''
+# creating output folder
+import os
+
+path = os.getcwd()
+print ("The current working directory is %s" % path)
+# define the name of the directory to be created
+path += "\comp"
+
+try:
+    os.makedirs(path)
+except OSError:
+    print ("Creation of the directory %s failed" % path)
+else:
+    print ("Successfully created the directory %s" % path)
+
+'''
+
 
 def NDVIconvert(img):
     # I get height and widith of the image
     w, h = img.size
-    
+
     # function below is usefull, because it can be used to many various indexes defined after
-    def operation(code, name, img, con):  
+    def operation(code, name, img, con):
         # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, obraz na któym jest wywołana funkcja, funkcja kontrastu
         # for every single index, thats what hapenn:
-        
-        print('index: '+name)
+
+        print('index: ' + name)
         index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
 
         img_rgb = img.convert('RGB')
@@ -23,9 +44,9 @@ def NDVIconvert(img):
         px_index_bw = index_bw.load()  # I get pixel information of b-w picture
         px_index_col = index_col.load()  # and hsl one
         indexSum = []  # list of every pixel's index
-        
+
         # checking every single pixel
-        
+
         for X in range(0, w):  # widith
             for Y in range(0, h):  # height
                 pixelRGB = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
@@ -35,13 +56,14 @@ def NDVIconvert(img):
                 # ~via Kuba Frączek
                 Brightness = sum(pixelRGB) / 3  # 0 is dark (black) and 255 is bright (white)
 
-                if 35 < Brightness < 180: # white and dark spots off
+                if 35 < Brightness < 180:  # white and dark spots off
                     index = code(r, g, b)
                     indexSum.append(index)  # add index value to the list t.b.c.
 
                     index = con(index)  # a nice, suitable contrast
 
-                    px_index_bw[X, Y] = (index, index, index)  # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
+                    px_index_bw[X, Y] = (
+                        index, index, index)  # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
                     px_index_col[X, Y] = (index, 200, 200)
                     # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
                     # i figured it out by myself ngl
@@ -54,11 +76,22 @@ def NDVIconvert(img):
         if s > 1:
             s -= 1  # zmiejszam i tak
 
+        end = s * 200 + 100
+        beg = 100
+
+        if sum(indexSum) / len(indexSum) > 0.4:
+            end = h - 10
+            if s > 1:
+                s -= 1
+        if sum(indexSum) / len(indexSum) < -0.4:
+            beg = 10
+            if s > 1:
+                s -= 1
         font = ImageFont.truetype("arial.ttf", 2 + s * 10)
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
-            for y in range(100, s * 200 + 100):
+            for y in range(beg, end):
                 nv = con(n)  # the same contrast as at picture
                 px_index_bw[x, y] = (nv, nv, nv)
                 px_index_col[x, y] = (nv, 200, 200)
@@ -87,7 +120,6 @@ def NDVIconvert(img):
             za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
             za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
 
-
             '''
             what scale does:
             - fits to any picture above 300 px height
@@ -97,47 +129,69 @@ def NDVIconvert(img):
 
         # nie moge zapisac w formacie hsl ;c (hsv my mistake)
         # zapisuje w moim formacie:
-        index_bw.save("comp\\" + str(i) + "_bw_"+name+".jpg")  # saves picture in grayscale
-        index_col.convert("RGB").save("comp\\" + str(i) + "_col_"+name+".jpg")  # saves picture in color scale
-        
+        index_bw.save("comp\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_col.convert("RGB").save("comp\\" + str(i) + "_col_" + name + ".jpg")  # saves picture in color scale
+
         # kolejno: najmniejsza wartość, średnia i największa
         print(min(indexSum))
         print(sum(indexSum) / len(indexSum))
         print(max(indexSum))
 
-        
-    # I define indexes function
-    # from: https://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XLII-3/1215/2018/isprs-archives-XLII-3-1215-2018.pdf
-    # plus once I read: because of the way the dyes are coupled to these layers, reproduce infrared as red, red as green, and green as blue.
-    
-    def rgbvi(r,g,b):
-        ix = (g*g - r*b) / (g*g + r*b)
-        return -ix
+    class Code:
 
-    def ndvi(r,g,b):
-        if (r + b) != 0:  # avoids division by zero
-            ix = (r - b) / (r + b)
-        else:
-            ix = (r - b) / 1
-        return ix
+        # I define indicies functions
+        # from: https://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XLII-3/1215/2018/isprs-archives-XLII-3-1215-2018.pdf
+        # plus once I read: because of the way the dyes are coupled to these layers, reproduce infrared as red, red as green, and green as blue.
 
-    def ndwi(r,g,b):
-        if (r + g) != 0:  # avoids division by zero
-            ix = (r - g) / (r + g)
-        else:
-            ix = (r - g) / 1
-        return ix
+        def rgbvi(r, g, b):
+            if (r - g) / (r + g) < -0.2:
+                ix = -2
+            else:
+                ix = (g * g - r * b) / (g * g + r * b)
+            return ix
 
-    def gli(r,g,b):
-        ix = (2*g -r -b) / (2*g + r + b)
-        return ix
-    
-    def vari(r,g,b):
-        if (g+r-b) != 0:
-            ix = (g-r)/(g+r-b)
-        else:
-            ix = 0
-        return - ix
+        def ndvi(r, g, b):
+            if (r + b) != 0:  # avoids division by zero
+                ix = (r - b) / (r + b)
+            else:
+                ix = (r - b) / 1
+            return ix
+
+        def ndwi(r, g, b):
+            if (r + g) != 0:  # avoids division by zero
+                ix = (r - g) / (r + g)
+            else:
+                ix = (r - g) / 1
+            return ix
+
+        def gli(r, g, b):
+            if (r - g) / (r + g) < -0.2:
+                ix = -2
+            else:
+                ix = (2 * g - r - b) / (2 * g + r + b)
+            return ix
+
+        def vari(r, g, b):
+            if (r - g) / (r + g) < -0.2:
+                ix = 2
+            else:
+                if (g + r - b) != 0:
+                    ix = (g - r) / (g + r - b)
+                else:
+                    ix = (g - r) / 1
+
+            return - ix
+
+        def rgi(r, g, b):
+            if g != 0:
+                ix = r / g
+            else:
+                ix = r / 1
+            return ix
+
+        def ergbve(r, g, b):
+            ix = 3.14159 * (g * g - r * b) / (g * g + r * b)
+            return ix
 
     # contrast function
     # every value below 0 ends up as 0, water starts at about -0.1, so I add 0.15
@@ -146,20 +200,22 @@ def NDVIconvert(img):
     # different indexes need different contrast
     # after all i changed it randomly to make it look good
 
-    def c1(v):
-        return int((v + 0.2) * 400)
-    def c2(v):
-        return int((v + 0.2) * 550)
-    def c3(v):
-        return int((v + 0.01) * 2000)
-    def c4(v):
-        return int((v - 0.1) * 500)
+    def con(add, multi):
+        def conx(v):
+            return int((v + add) * multi)
 
-    operation(rgbvi, 'rgbvi', img, c1)
-    operation(ndvi, 'ndvi', img, c1)
-    operation(ndwi, 'ndwi', img, c2)
-    operation(gli, 'gli', img, c3)
-    operation(vari, 'vari', img, c2)
+        return conx
+
+    # IMPORTANT! comment if needen't:
+
+    operation(Code.rgbvi, 'rgbvi', img, con(0.2, 450))
+    operation(Code.ndvi, 'ndvi', img, con(0.2, 400))
+    operation(Code.ndwi, 'ndwi', img, con(0.2, 550))
+    operation(Code.gli, 'gli', img, con(0.01, 2000))
+    operation(Code.vari, 'vari', img, con(0.15, 500))
+    operation(Code.rgi, 'rgi', img, con(-0.5, 200))
+    operation(Code.ergbve, 'ergbve', img, con(0.2, 300))
+
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
 
 
@@ -170,8 +226,9 @@ def NDVIconvert(img):
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
 
 for x in range(14, 15):
-    i = ''
+    i = 3
 
+    im = Image.open("imgtest\\img15.jfif")
     image = Image.open("imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic

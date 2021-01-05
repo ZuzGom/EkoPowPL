@@ -6,7 +6,6 @@ from PIL import Image, ImageDraw, ImageFont  # Pillow library
 
 # import matplotlib.pyplot as plt
 
-
 '''
 # creating output folder
 import os
@@ -14,7 +13,7 @@ import os
 path = os.getcwd()
 print ("The current working directory is %s" % path)
 # define the name of the directory to be created
-path += "\comp"
+path += "\\comp"
 
 try:
     os.makedirs(path)
@@ -26,15 +25,15 @@ else:
 '''
 
 
-def NDVIconvert(img):
+def index_convert(img):
     # I get height and widith of the image
     w, h = img.size
 
     # function below is usefull, because it can be used to many various indexes defined after
-    def operation(code, name, img, con):
-        # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, obraz na któym jest wywołana funkcja, funkcja kontrastu
+    def operation(code, name, con):
+        # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, funkcja kontrastu
         # for every single index, thats what hapenn:
-
+        nonlocal img
         print('index: ' + name)
         index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
 
@@ -43,7 +42,7 @@ def NDVIconvert(img):
 
         px_index_bw = index_bw.load()  # I get pixel information of b-w picture
         px_index_col = index_col.load()  # and hsl one
-        indexSum = []  # list of every pixel's index
+        index_sum = []  # list of every pixel's index
 
         # checking every single pixel
 
@@ -56,14 +55,14 @@ def NDVIconvert(img):
                 # ~via Kuba Frączek
                 Brightness = sum(pixelRGB) / 3  # 0 is dark (black) and 255 is bright (white)
 
-                if 35 < Brightness < 180:  # white and dark spots off
-                    index = code(r, g, b)
-                    indexSum.append(index)  # add index value to the list t.b.c.
+                if 35 < Brightness < 240:  # white and dark spots off
+                    index = code(code, r, g, b)
+                    index_sum.append(index)  # add index value to the list t.b.c.
 
                     index = con(index)  # a nice, suitable contrast
 
-                    px_index_bw[X, Y] = (
-                        index, index, index)  # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
+                    px_index_bw[X, Y] = (index, index, index)
+                    # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
                     px_index_col[X, Y] = (index, 200, 200)
                     # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
                     # i figured it out by myself ngl
@@ -79,11 +78,11 @@ def NDVIconvert(img):
         end = s * 200 + 100
         beg = 100
 
-        if sum(indexSum) / len(indexSum) > 0.4:
+        if sum(index_sum) / len(index_sum) > 0.4:
             end = h - 10
             if s > 1:
                 s -= 1
-        if sum(indexSum) / len(indexSum) < -0.4:
+        if sum(index_sum) / len(index_sum) < -0.4:
             beg = 10
             if s > 1:
                 s -= 1
@@ -92,40 +91,41 @@ def NDVIconvert(img):
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
             for y in range(beg, end):
-                nv = con(n)  # the same contrast as at picture
+                nv = con(n)  # the same contrast as at the picture
                 px_index_bw[x, y] = (nv, nv, nv)
                 px_index_col[x, y] = (nv, 200, 200)
                 n += 0.003 / s
 
-            ss = 32 * s  # odstępy między numerami
-            hh = 100 - 2  # początek skali
+        ss = 32 * s  # odstępy między numerami
+        hh = 100 - 2  # początek skali
 
-            # scale text on the hsv picture
-            zo = ImageDraw.Draw(index_col)
-            zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
-            zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
-            zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 3 * ss), ".1", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 4 * ss), ".2", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 5 * ss), ".3", (0, 0, 200), font=font)
-            zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
+        # scale text on the hsv picture
+        zo = ImageDraw.Draw(index_col)
+        zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
+        zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
+        zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 3 * ss), ".1", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 4 * ss), ".2", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 5 * ss), ".3", (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
 
-            # scale on the grayscale picture
-            za = ImageDraw.Draw(index_bw)
-            za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
-            za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
-            za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 3 * ss), ".1", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 4 * ss), ".2", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
-            za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
+        # scale on the grayscale picture
+        za = ImageDraw.Draw(index_bw)
+        za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
+        za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
+        za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 3 * ss), ".1", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 4 * ss), ".2", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
 
-            '''
-            what scale does:
-            - fits to any picture above 300 px height
-            - change its value according to contrast on the picture
-            - ...
-            '''
+        '''
+        what scale does:
+        - fits in any picture above 300 px height
+        - change its value according to contrast on the picture
+        - if the average index value is too high or too low, the scale can do mad things to fit
+        - ...
+        '''
 
         # nie moge zapisac w formacie hsl ;c (hsv my mistake)
         # zapisuje w moim formacie:
@@ -133,64 +133,53 @@ def NDVIconvert(img):
         index_col.convert("RGB").save("comp\\" + str(i) + "_col_" + name + ".jpg")  # saves picture in color scale
 
         # kolejno: najmniejsza wartość, średnia i największa
-        print(min(indexSum))
-        print(sum(indexSum) / len(indexSum))
-        print(max(indexSum))
+        print(min(index_sum))
+        print(sum(index_sum) / len(index_sum))
+        print(max(index_sum))
 
     class Code:
+        # I define indices functions (mostly) from:
+        # https://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XLII-3/1215/2018/isprs-archives-XLII-3-1215-2018.pdf
+        # plus once I read:
+        # because of the way the dyes are coupled to these layers, reproduce:
+        # infrared as red, red as green, and green as blue.
+        # do zrobienia: sprawdzić wszystkie indeksy w odsłonach normalnych i po powyższej zmianie
 
-        # I define indicies functions
-        # from: https://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XLII-3/1215/2018/isprs-archives-XLII-3-1215-2018.pdf
-        # plus once I read: because of the way the dyes are coupled to these layers, reproduce infrared as red, red as green, and green as blue.
-
-        def rgbvi(r, g, b):
+        def rgbvi(self, r, g, b):
             if (r - g) / (r + g) < -0.2:
                 ix = -2
             else:
-                ix = (g * g - r * b) / (g * g + r * b)
+                ix = (g * g - r * b) / (g * g + r * b + 0.1)
             return ix
 
-        def ndvi(r, g, b):
-            if (r + b) != 0:  # avoids division by zero
-                ix = (r - b) / (r + b)
-            else:
-                ix = (r - b) / 1
+        def ndvi(self, r, g, b):
+            ix = (r - b) / (r + b + 0.1)
             return ix
 
-        def ndwi(r, g, b):
-            if (r + g) != 0:  # avoids division by zero
-                ix = (r - g) / (r + g)
-            else:
-                ix = (r - g) / 1
+        def ndwi(self, r, g, b):
+            ix = (r - g) / (r + g + 0.1)
             return ix
 
-        def gli(r, g, b):
-            if (r - g) / (r + g) < -0.2:
+        def gli(self, r, g, b):
+            if (r - g) / (r + g + 0.1) < -0.2:
                 ix = -2
             else:
-                ix = (2 * g - r - b) / (2 * g + r + b)
+                ix = (2 * g - r - b) / (2 * g + r + b + 0.1)
             return ix
 
-        def vari(r, g, b):
+        def vari(self, r, g, b):
             if (r - g) / (r + g) < -0.2:
                 ix = 2
             else:
-                if (g + r - b) != 0:
-                    ix = (g - r) / (g + r - b)
-                else:
-                    ix = (g - r) / 1
-
+                ix = (g - r) / (g + r - b + 0.1)
             return - ix
 
-        def rgi(r, g, b):
-            if g != 0:
-                ix = r / g
-            else:
-                ix = r / 1
+        def rgi(self, r, g, b):
+            ix = r / (g + 0.1)
             return ix
 
-        def ergbve(r, g, b):
-            ix = 3.14159 * (g * g - r * b) / (g * g + r * b)
+        def ergbve(self, r, g, b):
+            ix = 3.14159 * (g * g - r * b) / (g * g + r * b + 0.1)
             return ix
 
     # contrast function
@@ -198,23 +187,27 @@ def NDVIconvert(img):
     # then I multiply it by 500 to make a good contrast
     # it cannot be float, because hsv and rgb can't read that ;c
     # different indexes need different contrast
-    # after all i changed it randomly to make it look good
+    # after all I changed it randomly to make it look good
 
     def con(add, multi):
-        def conx(v):
+        def con_new(v):
             return int((v + add) * multi)
 
-        return conx
+        return con_new
 
     # IMPORTANT! comment if needen't:
 
-    operation(Code.rgbvi, 'rgbvi', img, con(0.2, 450))
-    operation(Code.ndvi, 'ndvi', img, con(0.2, 400))
-    operation(Code.ndwi, 'ndwi', img, con(0.2, 550))
-    operation(Code.gli, 'gli', img, con(0.01, 2000))
-    operation(Code.vari, 'vari', img, con(0.15, 500))
-    operation(Code.rgi, 'rgi', img, con(-0.5, 200))
-    operation(Code.ergbve, 'ergbve', img, con(0.2, 300))
+    operation(Code.rgbvi, 'rgbvi', con(0.2, 450))
+
+    '''
+
+    '''
+    operation(Code.ndvi, 'ndvi', con(0.2, 400))
+    operation(Code.ndwi, 'ndwi', con(0.2, 550))
+    operation(Code.gli, 'gli', con(0.01, 2000))
+    operation(Code.vari, 'vari', con(0.15, 500))
+    operation(Code.rgi, 'rgi', con(-0.5, 200))
+    operation(Code.ergbve, 'ergbve', con(0.2, 300))
 
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
 
@@ -225,15 +218,15 @@ def NDVIconvert(img):
 # jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsl itd...
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
 
-for x in range(14, 15):
-    i = 3
+for _ in range(14, 15):
+    i = 16
 
     im = Image.open("imgtest\\img15.jfif")
     image = Image.open("imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
-    NDVIconvert(image)
-    # I changed it, so NDVIconvert is separated function, which can be called on any picture
+    index_convert(image)
+    # I changed it, so index_convert is a separated function, which can be called on any picture
 
     image.save("comp\\" + str(i) + "_org.jpg")  # saves original picture to compare
 

@@ -4,8 +4,6 @@
 
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
 
-# import matplotlib.pyplot as plt
-
 '''
 # creating output folder
 import os

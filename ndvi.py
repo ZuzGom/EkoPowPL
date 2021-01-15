@@ -1,8 +1,8 @@
 # Converting image to NDVI colored scale
 
-# UWAGA! używam słów hsl i hsv wymiennie nie pomylcie się :3
-
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
+
+p = "C:\\Projekty\\PicMatPlot"  # path to my test images folder
 
 '''
 # creating output folder
@@ -24,13 +24,13 @@ else:
 
 
 def index_convert(img):
-    # I get height and widith of the image
+    # I get height and width of the image
     w, h = img.size
 
-    # function below is usefull, because it can be used to many various indexes defined after
-    def operation(code, name, con):
+    # function below is useful, because it can be used to many various indexes defined after
+    def operation(code, name, contrast):
         # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, funkcja kontrastu
-        # for every single index, thats what hapenn:
+        # for every single index, that's what happen:
         nonlocal img
         print('index: ' + name)
         index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
@@ -39,30 +39,30 @@ def index_convert(img):
         index_bw = img_rgb.copy()  # creating copy for black-white index
 
         px_index_bw = index_bw.load()  # I get pixel information of b-w picture
-        px_index_col = index_col.load()  # and hsl one
+        px_index_col = index_col.load()  # and hsv one
         index_sum = []  # list of every pixel's index
 
         # checking every single pixel
 
-        for X in range(0, w):  # widith
+        for X in range(0, w):  # width
             for Y in range(0, h):  # height
-                pixelRGB = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
+                pixel_rgb = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
 
-                r, g, b = pixelRGB
+                r, g, b = pixel_rgb
 
                 # ~via Kuba Frączek
-                Brightness = sum(pixelRGB) / 3  # 0 is dark (black) and 255 is bright (white)
+                brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
 
-                if 35 < Brightness < 240:  # white and dark spots off
-                    index = code(code, r, g, b)
+                if 35 < brightness < 150:  # white and dark spots off
+                    index = code(r, g, b)
                     index_sum.append(index)  # add index value to the list t.b.c.
 
-                    index = con(index)  # a nice, suitable contrast
+                    index = contrast(index)  # a nice, suitable contrast
 
                     px_index_bw[X, Y] = (index, index, index)
-                    # one picture in GRAYSCALE (r +b +g equals gray (or wihte (or black)))
+                    # one picture in GRAYSCALE (r +b +g equals gray (or white (or black)))
                     px_index_col[X, Y] = (index, 200, 200)
-                    # and one picture in HSL, in which H is index, so index value is one color of the scpectrum
+                    # and one picture in HSV, in which H is index, so index value is one color of the spectrum
                     # i figured it out by myself ngl
 
         print('zdjęcie nr. ' + str(i))  # Warum hier???
@@ -74,8 +74,9 @@ def index_convert(img):
             s -= 1  # zmiejszam i tak
 
         end = s * 200 + 100
-        beg = 100
+        beg = 50
 
+        # if average index value is too high or too low scale must adapt
         if sum(index_sum) / len(index_sum) > 0.4:
             end = h - 10
             if s > 1:
@@ -89,7 +90,7 @@ def index_convert(img):
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
             for y in range(beg, end):
-                nv = con(n)  # the same contrast as at the picture
+                nv = contrast(n)  # the same contrast as at the picture
                 px_index_bw[x, y] = (nv, nv, nv)
                 px_index_col[x, y] = (nv, 200, 200)
                 n += 0.003 / s
@@ -125,10 +126,10 @@ def index_convert(img):
         - ...
         '''
 
-        # nie moge zapisac w formacie hsl ;c (hsv my mistake)
+        # nie moge zapisac w formacie hsv ;c (hsv my mistake)
         # zapisuje w moim formacie:
-        index_bw.save("comp\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        index_col.convert("RGB").save("comp\\" + str(i) + "_col_" + name + ".jpg")  # saves picture in color scale
+        index_bw.save(p + "\\final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_col.convert("RGB").save(p + "\\final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
 
         # kolejno: najmniejsza wartość, średnia i największa
         print(min(index_sum))
@@ -143,40 +144,47 @@ def index_convert(img):
         # infrared as red, red as green, and green as blue.
         # do zrobienia: sprawdzić wszystkie indeksy w odsłonach normalnych i po powyższej zmianie
 
-        def rgbvi(self, r, g, b):
+        @staticmethod
+        def rgbvi(r, g, b):
             if (r - g) / (r + g) < -0.2:
                 ix = -2
             else:
                 ix = (g * g - r * b) / (g * g + r * b + 0.1)
             return ix
 
-        def ndvi(self, r, g, b):
+        @staticmethod
+        def ndvi(r, g, b):
             ix = (r - b) / (r + b + 0.1)
             return ix
 
-        def ndwi(self, r, g, b):
+        @staticmethod
+        def ndwi(r, g, b):
             ix = (r - g) / (r + g + 0.1)
             return ix
 
-        def gli(self, r, g, b):
+        @staticmethod
+        def gli(r, g, b):
             if (r - g) / (r + g + 0.1) < -0.2:
                 ix = -2
             else:
                 ix = (2 * g - r - b) / (2 * g + r + b + 0.1)
             return ix
 
-        def vari(self, r, g, b):
+        @staticmethod
+        def vari(r, g, b):
             if (r - g) / (r + g) < -0.2:
                 ix = 2
             else:
                 ix = (g - r) / (g + r - b + 0.1)
             return - ix
 
-        def rgi(self, r, g, b):
+        @staticmethod
+        def rgi(r, g, b):
             ix = r / (g + 0.1)
             return ix
 
-        def ergbve(self, r, g, b):
+        @staticmethod
+        def ergbve(r, g, b):
             ix = 3.14159 * (g * g - r * b) / (g * g + r * b + 0.1)
             return ix
 
@@ -193,19 +201,19 @@ def index_convert(img):
 
         return con_new
 
-    # IMPORTANT! comment if needen't:
-
-    operation(Code.rgbvi, 'rgbvi', con(0.2, 450))
+    # IMPORTANT! comment if needn't:
 
     '''
-
-    '''
-    operation(Code.ndvi, 'ndvi', con(0.2, 400))
-    operation(Code.ndwi, 'ndwi', con(0.2, 550))
-    operation(Code.gli, 'gli', con(0.01, 2000))
     operation(Code.vari, 'vari', con(0.15, 500))
-    operation(Code.rgi, 'rgi', con(-0.5, 200))
     operation(Code.ergbve, 'ergbve', con(0.2, 300))
+    operation(Code.gli, 'gli', con(0.01, 2000))
+    operation(Code.rgbvi, 'rgbvi', con(0.2, 450))
+    '''
+
+    operation(Code.ndvi, 'ndvi', con(0.35, 300))
+    operation(Code.ndwi, 'ndwi', con(0.2, 550))
+
+    operation(Code.rgi, 'rgi', con(-0.6, 200))
 
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
 
@@ -213,20 +221,19 @@ def index_convert(img):
 # #####################_MAIN_######################
 
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
-# jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsl itd...
+# jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
 
 for _ in range(14, 15):
-    i = 16
-
-    im = Image.open("imgtest\\img15.jfif")
-    image = Image.open("imgtest\\img" + str(i) + ".jpg")
+    i = 3
+    im = Image.open(p + "\\imgtest\\img15.jfif")
+    image = Image.open(p + "\\imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
     index_convert(image)
     # I changed it, so index_convert is a separated function, which can be called on any picture
 
-    image.save("comp\\" + str(i) + "_org.jpg")  # saves original picture to compare
+    image.save(p+"\\final\\" + str(i) + "_org.jpg")  # saves original picture to compare
 
 # funkcja działa wolno niestety, będziemy musieli zdecydować ktore zdjecie zostawimy albo nie wykonywac tego na stacji
 # na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko

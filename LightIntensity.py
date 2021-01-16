@@ -21,8 +21,9 @@
 #
 # Założenie tego co chcę zrobić jest takie: policzę luminancję dla  całych zdjęć, osobno dla wody, chmur i śniegu oraz lądu(jeśli się uda)
 # potem nałożenie na mapę zanieczyszczeń i szukanie związku xd (powodzenia ja)
+#
 # Oblicznie luminancji dla całego zdjęcia: T
-# Oblicznie luminancji dla wody: N
+# Oblicznie luminancji dla wody: T
 # Oblicznie luminancji dla chmur i śniegu: N
 # Oblicznie luminancji dla lądu: N
 
@@ -33,105 +34,144 @@ from math import sqrt
 img = Image.open("test.jpg")
 img = img.convert('RGB')
 
+# Robię kopię dla kolejno Wody, Chmur i Lądu żeby móc sobie zobrazować czy algorytm dobrze działa
+
+width = 1296
+height = 972
+
 imgWater = img.copy().convert('HSV')  # creating copy, so it won't overwrite original picture
 pixelsWater = imgWater.load()
 
 imgClouds = img.copy()  # creating copy, so it won't overwrite original picture
 pixelsClouds = imgClouds.load()
 
-imgLand = img.copy()
+imgLand = img.copy() # creating copy, so it won't overwrite original picture
 pixelsLand = imgLand.load()
-
-#NDWI=(G-IR)/(G+IR)
 
 # Formuła na względną luminancję: Y = 0.2126*R + 0.7152*G + 0.0722*B
 RelativeLuminance = 0
 
-# AverageRelativeLuminance średnia dla całego zdjęcia
-# AverageRelativeLuminance2 średnia dla zdjęcia bez (większości) fragmentów okna
-# AverageRelativeLuminance2pixels liczba pikseli uwzględnionych w wyliczaniu verageRelativeLuminance2
+# AverageRelativeLuminance odpowiada za średnią luminancję całego zdjęcia, włącznie z oknem
 AverageRelativeLuminance = 0
-AverageRelativeLuminance2 = 0
-AverageRelativeLuminance2pixels = 0
 
+# AverageRelativeLuminance2 odpowiada za średnią luminancję zdjęcia bez okna
+AverageRelativeLuminance2 = 0
+AverageRelativeLuminance2pixels = 0 # zmienna pomocnicza
+
+# Obliczanie średniej luminancji dla wody
 WaterRelativeLuminance=0
 WaterPixels=0
 AverageWaterRelativeLuminance = 0
 
+# Obliczanie średniej luminancji dla chmur
 CloudsRelativeLuminance=0
 CloudsPixels=0
 AverageCloudsRelativeLuminance = 0
 
+# Obliczanie średniej luminancji dla lądu
 LandRelativeLuminance=0
 LandPixels=0
 AverageLandRelativeLuminance = 0
 
-for X in range(0, 4*324):  # image width
-    for Y in range(0, 3*324):  # image height
-        pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
+# Pętla #1, odpowiedzialna za:
+# - policzenie średniej luminancji całego zdjęcia
+# - wyodrębnienie wody ze zdjęcia za pomocą indeksu NDWI
 
+for X in range(0, width):  # image width
+    for Y in range(0, height):  # image height
+
+        # Original image pixels
+        pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
         R, G, B = pixelRGB  # divide RBG into sigle variables
 
-        Brightness=int((R+G+B)/3)
-
+        # Liczy RelativeLuminance
         RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
         RelativeLuminance = int(RelativeLuminance)
         AverageRelativeLuminance+=RelativeLuminance
 
-        # Obliczenie NDWI i zrzutowanie do 0-360
+        # Obliczenie NDWI i zrzutowanie do 0-360 (tak mi się wydaje, tak chciałem żeby działało i chyba działa, so far so good)
         if(R+G) > 0:
+
             NDWI = (R - G) / (R + G)
 
+            # Rzutowanie (-1,1) do (0,360)
             NDWI *= 130
             NDWI += 130
 
-            #print(NDWI)
+            # Nie mogę tu policzyć średniej luminancji bo zaznaczane są fragmenty okna,
+            # pozbedę się ich w następnej pętli
 
-            if NDWI < 115:
-                WaterRelativeLuminance+=RelativeLuminance
-                WaterPixels += 1
+            if NDWI < 115: # Na oko, so far so good
                 # ~via Zuzia
-                pixelsWater[X, Y] = (int(NDWI), 200, 200)
+                pixelsWater[X, Y] = (int(NDWI), 200, 200) # HSV
             else:
                 pixelsWater[X, Y] = (0,0,0)
 
-            #pixelsWater[X,Y]=(int((NDVI*255)/100),int((NDVI*255)/100),int((NDVI*255)/100))
 
 imgWater = imgWater.convert('RGB') # konwertuje do rgb, bo wcześniej otworzyłem w hsv
 pixelsWater = imgWater.load()
+
 pixelsLand = imgLand.load()
 
 # wyliczanie średniej luminancji całego zdjęcia, AverageRelativeLuminance podzielone przez liczbę pikseli
-AverageRelativeLuminance/=4*324*3*324
+AverageRelativeLuminance/=width*height
 
-for X in range(0, 4 * 324):  # image width
-    for Y in range(0, 3 * 324):  # image height
+# Pętla #2, odpowiedzialna za:
+# - Obliczenie średniej luminancji dla wody + chmur i śniegu + lądu
+# - Obliczenie średniej luminancji dla wody
+# - wyodręgnienie wody ze zdjęcia z chmurami i lądem
+# - wyodrębnienie okna ze zdjęcia z chmurami i lądem
+
+for X in range(0, width):  # image width
+    for Y in range(0, height):  # image height
+
+        # Original image pixels
         pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
         R, G, B = pixelRGB  # divide RBG into sigle variables
 
-
-
+        # Liczy RelativeLuminance
         RelativeLuminance = (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
-
         RelativeLuminance = int(RelativeLuminance)
 
         # pozbywa się tego okna??? przynajmniej na tych przykładowych zdjęciach które mam
+        # wpadłem na coś takiego i na różnych zdjęciach które testuje, działa całkiem spoko
+        # Czyli jeżeli luminancja danego piksela jest mniejsza od średniej luminancji całego zdjęcia/3 to jest oknem :p
+
         if (RelativeLuminance < AverageRelativeLuminance/3):
             pixelsLand[X, Y] = (0, 0, 0)
         else:
+
+            #jeżeli piksele nie są "oknem" to jest liczona średnia luminancja dla reszty zdjęcia: wody + chmur i śniegu + lądu
+
             AverageRelativeLuminance2 += RelativeLuminance
             AverageRelativeLuminance2pixels+=1
 
+        # imgWater otwarty w RGB
         pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
         Rw, Gw, Bw = pixelRGBWater  # divide RBG into sigle variables
 
+        # imgLand otwarty w RGB
         pixelRGBLand = imgLand.getpixel((X,Y))
         Rl, Gl, Bl = pixelRGBLand
 
         # Ustawiam czarny na zdjeciu z woda tam gdzie wczesniej ustawiłem czarny na zdjeciu z lądem xd
         # chodzi o to zeby sie pozbyc okna
-        if Rl == 0 and Gl == 0 and Bl == 0:
+        if Rl == 0 and Gl == 0 and Bl == 0: # wartości RGB dla lądu
             pixelsWater[X, Y] = (0, 0, 0)
+            pixelsClouds[X,Y]=(0,0,0) # przy okazji usuwam okno ze zdjęcia z chmurami
+
+        elif Rw != 0 or Gw != 0 or Bw != 0: # wartości RGB dla wody
+
+            # Korzystając z okazji, wymazuję wodę ze zdjęć z chmurami i lądem ^_^
+            pixelsLand[X, Y] = (0, 0, 0)
+            pixelsClouds[X, Y] = (0, 0, 0)
+
+            # W tym momencie okno jest czarne, oraz we wcześniejszej pętli inne piksele niż woda ustawiłem na 0,0,0
+            # zatem jedynymi pikselami różnymi od 0,0,0 powinna być woda
+            # dlatewgo liczę tutaj jej średnią luminancję
+
+            WaterRelativeLuminance += RelativeLuminance
+            WaterPixels += 1
         """
         # Obliczam NDWI, żeby sprawdzić Relative Luminance dla samej wody
         NDWI=0

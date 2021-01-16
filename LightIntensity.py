@@ -20,6 +20,7 @@
 # reference: https://en.wikipedia.org/wiki/Relative_luminance
 #
 # Założenie tego co chcę zrobić jest takie: policzę luminancję dla  całych zdjęć, osobno dla wody, chmur i śniegu oraz lądu(jeśli się uda)
+# potem nałożenie na mapę zanieczyszczeń i szukanie związku xd (powodzenia ja)
 # Oblicznie luminancji dla całego zdjęcia: T
 # Oblicznie luminancji dla wody: N
 # Oblicznie luminancji dla chmur i śniegu: N
@@ -32,7 +33,7 @@ from math import sqrt
 img = Image.open("test.jpg")
 img = img.convert('RGB')
 
-imgWater = img.copy()  # creating copy, so it won't overwrite original picture
+imgWater = img.copy().convert('HSV')  # creating copy, so it won't overwrite original picture
 pixelsWater = imgWater.load()
 
 imgClouds = img.copy()  # creating copy, so it won't overwrite original picture
@@ -65,10 +66,10 @@ LandRelativeLuminance=0
 LandPixels=0
 AverageLandRelativeLuminance = 0
 
-
 for X in range(0, 4*324):  # image width
     for Y in range(0, 3*324):  # image height
         pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
+
         R, G, B = pixelRGB  # divide RBG into sigle variables
 
         Brightness=int((R+G+B)/3)
@@ -76,6 +77,29 @@ for X in range(0, 4*324):  # image width
         RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
         RelativeLuminance = int(RelativeLuminance)
         AverageRelativeLuminance+=RelativeLuminance
+
+        # Obliczenie NDWI i zrzutowanie do 0-360
+        if(R+G) > 0:
+            NDWI = (R - G) / (R + G)
+
+            NDWI *= 130
+            NDWI += 130
+
+            #print(NDWI)
+
+            if NDWI < 115:
+                WaterRelativeLuminance+=RelativeLuminance
+                WaterPixels += 1
+                # ~via Zuzia
+                pixelsWater[X, Y] = (int(NDWI), 200, 200)
+            else:
+                pixelsWater[X, Y] = (0,0,0)
+
+            #pixelsWater[X,Y]=(int((NDVI*255)/100),int((NDVI*255)/100),int((NDVI*255)/100))
+
+imgWater = imgWater.convert('RGB') # konwertuje do rgb, bo wcześniej otworzyłem w hsv
+pixelsWater = imgWater.load()
+pixelsLand = imgLand.load()
 
 # wyliczanie średniej luminancji całego zdjęcia, AverageRelativeLuminance podzielone przez liczbę pikseli
 AverageRelativeLuminance/=4*324*3*324
@@ -91,12 +115,23 @@ for X in range(0, 4 * 324):  # image width
 
         RelativeLuminance = int(RelativeLuminance)
 
-        if (RelativeLuminance < AverageRelativeLuminance/2):
+        # pozbywa się tego okna??? przynajmniej na tych przykładowych zdjęciach które mam
+        if (RelativeLuminance < AverageRelativeLuminance/3):
             pixelsLand[X, Y] = (0, 0, 0)
         else:
             AverageRelativeLuminance2 += RelativeLuminance
             AverageRelativeLuminance2pixels+=1
 
+        pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
+        Rw, Gw, Bw = pixelRGBWater  # divide RBG into sigle variables
+
+        pixelRGBLand = imgLand.getpixel((X,Y))
+        Rl, Gl, Bl = pixelRGBLand
+
+        # Ustawiam czarny na zdjeciu z woda tam gdzie wczesniej ustawiłem czarny na zdjeciu z lądem xd
+        # chodzi o to zeby sie pozbyc okna
+        if Rl == 0 and Gl == 0 and Bl == 0:
+            pixelsWater[X, Y] = (0, 0, 0)
         """
         # Obliczam NDWI, żeby sprawdzić Relative Luminance dla samej wody
         NDWI=0
@@ -177,12 +212,12 @@ if LandPixels > 0:
 imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 
 data = open ('LightIntensity.csv','a')
-dane = ["Datetime: "+str(imageDatetime)+";   AverageRelativeLuminance: "+str(AverageRelativeLuminance)+";  AverageRelativeLuminanceWithoutWindowBorders: "+str(AverageRelativeLuminance2)+";    AverageLandRelativeLuminance: "+str(AverageLandRelativeLuminance)+'\n']
+dane = ["Datetime: "+str(imageDatetime)+";   AverageRelativeLuminance: "+str(AverageRelativeLuminance)+";  AverageRelativeLuminanceWithoutWindowBorders: "+str(AverageRelativeLuminance2)+";    AverageWaterRelativeLuminance: "+str(AverageWaterRelativeLuminance)+'\n']
 data.writelines(str(dane))
 data.close()
 
 
-
+#imgWater = imgWater.convert('RGB')
 
 imgWater.save("_Water.jpg")
 imgClouds.save("_Clouds.jpg")

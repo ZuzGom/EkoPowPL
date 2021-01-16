@@ -5,32 +5,41 @@
 # jest to miara tego, jak bardzo padające światło oświetla powierzchnię. Mierzone w LUX-ach
 #
 # Luminance is a photometric measure of the luminous intensity per unit area of light travelling in a given direction.
-# It describes the amount of light that passes through, is emitted from, or is reflected from a particular area, and falls within a given solid angle.
-# PL: Luminancja to fotometryczna miara natężenia światła na jednostkę powierzchni światła przemieszczającego się w danym kierunku.
-# # Opisuje ilość światła, które przechodzi, jest emitowane lub odbijane od określonego obszaru i pada pod określonym kątem bryłowym.
+# It describes the amount of light that passes through, is emitted from, or is reflected from a particular area,
+# and falls within a given solid angle.
+# PL: Luminancja to fotometryczna miara natężenia światła na jednostkę
+# powierzchni światła przemieszczającego się w danym kierunku.
+# # Opisuje ilość światła, które przechodzi, jest emitowane lub odbijane
+# od określonego obszaru i pada pod określonym kątem bryłowym.
 # reference: https://en.wikipedia.org/wiki/Luminance
 #
-# Relative luminance follows the photometric definition of luminance, but with the values normalized to 1 or 100 for a reference white.
-# Like the photometric definition, it is related to the luminous flux density in a particular direction, which is radiant flux density
+# Relative luminance follows the photometric definition of luminance, but with the
+# values normalized to 1 or 100 for a reference white. Like the photometric definition,
+# it is related to the luminous flux density in a particular direction, which is radiant flux density
 # weighted by the luminosity function y(λ) of the CIE Standard Observer.
-# PL: Luminancja względna jest zgodna z definicją fotometryczną luminancji, ale z wartościami znormalizowanymi do 1 lub 100 dla bieli odniesienia.
-# Podobnie jak definicja fotometryczna, jest ona związana z gęstością strumienia świetlnego w określonym kierunku, którym jest gęstość strumienia promieniowania
-# ważone funkcją jasności y (λ) CIE Standard Observer.
+# PL: Luminancja względna jest zgodna z definicją fotometryczną luminancji, ale z wartościami
+# znormalizowanymi do 1 lub 100 dla bieli odniesienia. Podobnie jak definicja fotometryczna,
+# jest ona związana z gęstością strumienia świetlnego w określonym kierunku, którym jest gęstość
+# strumienia promieniowania ważone funkcją jasności y (λ) CIE Standard Observer.
 # Y = 0.2126*R + 0.7152G + 0.0722B.
 # reference: https://en.wikipedia.org/wiki/Relative_luminance
 #
-# Założenie tego co chcę zrobić jest takie: policzę luminancję dla  całych zdjęć, osobno dla wody, chmur i śniegu oraz lądu(jeśli się uda)
+# Założenie tego co chcę zrobić jest takie: policzę luminancję dla  całych zdjęć,
+# osobno dla wody, chmur i śniegu oraz lądu(jeśli się uda)
 # potem nałożenie na mapę zanieczyszczeń i szukanie związku xd (powodzenia ja)
 #
 # Oblicznie luminancji dla całego zdjęcia: T
 # Oblicznie luminancji dla wody: T
 # Oblicznie luminancji dla chmur i śniegu: N
 # Oblicznie luminancji dla lądu: N
+#
+# TO DO:
+# - odróżnić chmury od lądu i obliczyć ich średnią luminancję
 
-from PIL import Image #Pillow library
+from PIL import Image  # Pillow library
 import datetime
 
-from math import sqrt
+
 img = Image.open("test.jpg")
 img = img.convert('RGB')
 
@@ -39,13 +48,16 @@ img = img.convert('RGB')
 width = 1296
 height = 972
 
+# width = 1920
+# height = 1080
+
 imgWater = img.copy().convert('HSV')  # creating copy, so it won't overwrite original picture
 pixelsWater = imgWater.load()
 
 imgClouds = img.copy()  # creating copy, so it won't overwrite original picture
 pixelsClouds = imgClouds.load()
 
-imgLand = img.copy() # creating copy, so it won't overwrite original picture
+imgLand = img.copy()  # creating copy, so it won't overwrite original picture
 pixelsLand = imgLand.load()
 
 # Formuła na względną luminancję: Y = 0.2126*R + 0.7152*G + 0.0722*B
@@ -56,21 +68,21 @@ AverageRelativeLuminance = 0
 
 # AverageRelativeLuminance2 odpowiada za średnią luminancję zdjęcia bez okna
 AverageRelativeLuminance2 = 0
-AverageRelativeLuminance2pixels = 0 # zmienna pomocnicza
+AverageRelativeLuminance2pixels = 0  # zmienna pomocnicza
 
 # Obliczanie średniej luminancji dla wody
-WaterRelativeLuminance=0
-WaterPixels=0
+WaterRelativeLuminance = 0
+WaterPixels = 0
 AverageWaterRelativeLuminance = 0
 
 # Obliczanie średniej luminancji dla chmur
-CloudsRelativeLuminance=0
-CloudsPixels=0
+CloudsRelativeLuminance = 0
+CloudsPixels = 0
 AverageCloudsRelativeLuminance = 0
 
 # Obliczanie średniej luminancji dla lądu
-LandRelativeLuminance=0
-LandPixels=0
+LandRelativeLuminance = 0
+LandPixels = 0
 AverageLandRelativeLuminance = 0
 
 # Pętla #1, odpowiedzialna za:
@@ -87,9 +99,9 @@ for X in range(0, width):  # image width
         # Liczy RelativeLuminance
         RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
         RelativeLuminance = int(RelativeLuminance)
-        AverageRelativeLuminance+=RelativeLuminance
+        AverageRelativeLuminance += RelativeLuminance
 
-        # Obliczenie NDWI i zrzutowanie do 0-360 (tak mi się wydaje, tak chciałem żeby działało i chyba działa, so far so good)
+        # Obliczenie NDWI i zrzutowanie do 0-360 (tak mi się wydaje, tak chciałem żeby działało, so far so good)
         if(R+G) > 0:
 
             NDWI = (R - G) / (R + G)
@@ -101,20 +113,20 @@ for X in range(0, width):  # image width
             # Nie mogę tu policzyć średniej luminancji bo zaznaczane są fragmenty okna,
             # pozbedę się ich w następnej pętli
 
-            if NDWI < 115: # Na oko, so far so good
+            if NDWI < 115:  # Na oko, so far so good
                 # ~via Zuzia
-                pixelsWater[X, Y] = (int(NDWI), 200, 200) # HSV
+                pixelsWater[X, Y] = (int(NDWI), 200, 200)  # HSV
             else:
-                pixelsWater[X, Y] = (0,0,0)
+                pixelsWater[X, Y] = (0, 0, 0)
 
 
-imgWater = imgWater.convert('RGB') # konwertuje do rgb, bo wcześniej otworzyłem w hsv
+imgWater = imgWater.convert('RGB')  # konwertuje do rgb, bo wcześniej otworzyłem w hsv
 pixelsWater = imgWater.load()
 
 pixelsLand = imgLand.load()
 
 # wyliczanie średniej luminancji całego zdjęcia, AverageRelativeLuminance podzielone przez liczbę pikseli
-AverageRelativeLuminance/=width*height
+AverageRelativeLuminance /= width*height
 
 # Pętla #2, odpowiedzialna za:
 # - Obliczenie średniej luminancji dla wody + chmur i śniegu + lądu
@@ -137,30 +149,30 @@ for X in range(0, width):  # image width
         # wpadłem na coś takiego i na różnych zdjęciach które testuje, działa całkiem spoko
         # Czyli jeżeli luminancja danego piksela jest mniejsza od średniej luminancji całego zdjęcia/3 to jest oknem :p
 
-        if (RelativeLuminance < AverageRelativeLuminance/3):
+        if RelativeLuminance < (AverageRelativeLuminance / 3):
             pixelsLand[X, Y] = (0, 0, 0)
         else:
 
-            #jeżeli piksele nie są "oknem" to jest liczona średnia luminancja dla reszty zdjęcia: wody + chmur i śniegu + lądu
+            # jeżeli piksele nie są "oknem" to jest liczona średnia luminancja dla reszty zdjęcia: wody + chmur + lądu
 
             AverageRelativeLuminance2 += RelativeLuminance
-            AverageRelativeLuminance2pixels+=1
+            AverageRelativeLuminance2pixels += 1
 
         # imgWater otwarty w RGB
         pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
         Rw, Gw, Bw = pixelRGBWater  # divide RBG into sigle variables
 
         # imgLand otwarty w RGB
-        pixelRGBLand = imgLand.getpixel((X,Y))
+        pixelRGBLand = imgLand.getpixel((X, Y))
         Rl, Gl, Bl = pixelRGBLand
 
         # Ustawiam czarny na zdjeciu z woda tam gdzie wczesniej ustawiłem czarny na zdjeciu z lądem xd
         # chodzi o to zeby sie pozbyc okna
-        if Rl == 0 and Gl == 0 and Bl == 0: # wartości RGB dla lądu
+        if Rl == 0 and Gl == 0 and Bl == 0:  # wartości RGB dla lądu
             pixelsWater[X, Y] = (0, 0, 0)
-            pixelsClouds[X,Y]=(0,0,0) # przy okazji usuwam okno ze zdjęcia z chmurami
+            pixelsClouds[X, Y] = (0, 0, 0)  # przy okazji usuwam okno ze zdjęcia z chmurami
 
-        elif Rw != 0 or Gw != 0 or Bw != 0: # wartości RGB dla wody
+        elif Rw != 0 or Gw != 0 or Bw != 0:  # wartości RGB dla wody
 
             # Korzystając z okazji, wymazuję wodę ze zdjęć z chmurami i lądem ^_^
             pixelsLand[X, Y] = (0, 0, 0)
@@ -224,7 +236,8 @@ for X in range(0, width):  # image width
         if (NDWI)>0.05:
             pixelsLand[X, Y] = (0, 0, 0)
         #elif (R-Brig+G-Brig+B-Brig)>0 and Brig - RelativeLuminance > 0:
-        elif Brightness > 60 and abs(R-B)<25 and abs(R-G)<25 and abs(B-R)<25 and abs(B-G)<25 and abs(G-R)<25 and abs(G-B)<25:
+        elif Brightness > 60 and abs(R-B)<25 and abs(R-G)<25 and abs(B-R)<25 
+        # and abs(B-G)<25 and abs(G-R)<25 and abs(G-B)<25:
             pixelsLand[X, Y] = (0, 0, 0)
         elif Brightness < 60:
             pixelsLand[X, Y] = (0, 0, 0)
@@ -237,9 +250,6 @@ for X in range(0, width):  # image width
 AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
 print(AverageRelativeLuminance2)
 
-
-        #pixels[X, Y] = (RelativeLuminance-Brig, RelativeLuminance-Brig, RelativeLuminance-Brig)
-
 if WaterPixels > 0:
     AverageWaterRelativeLuminance = WaterRelativeLuminance/WaterPixels
 
@@ -251,15 +261,18 @@ if LandPixels > 0:
 
 imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 
-data = open ('LightIntensity.csv','a')
-dane = ["Datetime: "+str(imageDatetime)+";   AverageRelativeLuminance: "+str(AverageRelativeLuminance)+";  AverageRelativeLuminanceWithoutWindowBorders: "+str(AverageRelativeLuminance2)+";    AverageWaterRelativeLuminance: "+str(AverageWaterRelativeLuminance)+'\n']
+data = open('LightIntensity.csv', 'a')
+dane = ["Datetime: "+str(imageDatetime)]
+dane += [";   AverageRelativeLuminance: "+str(AverageRelativeLuminance)]
+dane += [";  AverageRelativeLuminanceWithoutWindowBorders: "+str(AverageRelativeLuminance2)]
+dane += [";    AverageWaterRelativeLuminance: "+str(AverageWaterRelativeLuminance)]
+dane += ['\n']
 data.writelines(str(dane))
 data.close()
 
 
-#imgWater = imgWater.convert('RGB')
+# imgWater = imgWater.convert('RGB')
 
 imgWater.save("_Water.jpg")
 imgClouds.save("_Clouds.jpg")
 imgLand.save("_Land.jpg")
-

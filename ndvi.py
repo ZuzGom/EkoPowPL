@@ -2,7 +2,7 @@
 
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
 
-p = "C:\\Projekty\\PicMatPlot"  # path to my test images folder
+p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
 '''
 # creating output folder
@@ -74,7 +74,7 @@ def index_convert(img):
             s -= 1  # zmiejszam i tak
 
         end = s * 200 + 100
-        beg = 50
+        beg = 100
 
         # if average index value is too high or too low scale must adapt
         if sum(index_sum) / len(index_sum) > 0.4:
@@ -96,7 +96,7 @@ def index_convert(img):
                 n += 0.003 / s
 
         ss = 32 * s  # odstępy między numerami
-        hh = 100 - 2  # początek skali
+        hh = beg - 2  # początek skali
 
         # scale text on the hsv picture
         zo = ImageDraw.Draw(index_col)
@@ -128,8 +128,8 @@ def index_convert(img):
 
         # nie moge zapisac w formacie hsv ;c (hsv my mistake)
         # zapisuje w moim formacie:
-        index_bw.save(p + "\\final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        index_col.convert("RGB").save(p + "\\final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
+        index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
 
         # kolejno: najmniejsza wartość, średnia i największa
         print(min(index_sum))
@@ -226,14 +226,14 @@ def index_convert(img):
 
 for _ in range(14, 15):
     i = 3
-    im = Image.open(p + "\\imgtest\\img15.jfif")
-    image = Image.open(p + "\\imgtest\\img" + str(i) + ".jpg")
+    im = Image.open(p + "imgtest\\img15.jfif")
+    image = Image.open(p + "imgtest\\img" + str(i) + ".jpg")
 
     # I get average and maximum NDVI value, ndvi pic and color pic
     index_convert(image)
     # I changed it, so index_convert is a separated function, which can be called on any picture
 
-    image.save(p+"\\final\\" + str(i) + "_org.jpg")  # saves original picture to compare
+    image.save(p+"final\\" + str(i) + "_org.jpg")  # saves original picture to compare
 
 # funkcja działa wolno niestety, będziemy musieli zdecydować ktore zdjecie zostawimy albo nie wykonywac tego na stacji
 # na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko

@@ -2,6 +2,7 @@
 
 from PIL import Image, ImageDraw, ImageFont  # Pillow library
 
+p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
 '''
 # creating output folder
@@ -64,7 +65,7 @@ def index_convert(img):
                     # and one picture in HSV, in which H is index, so index value is one color of the spectrum
                     # i figured it out by myself ngl
 
-        #print('zdjęcie nr. ' + str(i))  # Warum hier???
+        # print('zdjęcie nr. ' + str(i))  # Warum hier???
 
         # ####### skala ######
 
@@ -84,7 +85,8 @@ def index_convert(img):
             beg = 10
             if s > 1:
                 s -= 1
-        font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)
+        font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
+        # font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
@@ -127,13 +129,17 @@ def index_convert(img):
 
         # nie moge zapisac w formacie hsv ;c (hsv my mistake)
         # zapisuje w moim formacie:
-        #index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        #index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
 
+        # works on raspberry pi
         index_bw.save("1_bw_" + name + ".jpg")  # saves picture in grayscale
         index_col = index_col.convert("RGB")
         index_col.save("1_col_" + name + ".jpg")  # picture in color scale
-        print('worked')
+
+        # works on my pc
+        # index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        # index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
+
+        # print('worked')
 
         # kolejno: najmniejsza wartość, średnia i największa
         print(min(index_sum))
@@ -202,7 +208,6 @@ def index_convert(img):
     def con(add, multi):
         def con_new(v):
             return int((v + add) * multi)
-
         return con_new
 
     # IMPORTANT! comment if needn't:
@@ -216,10 +221,7 @@ def index_convert(img):
     operation(Code.rgi, 'rgi', con(-0.6, 200))
     '''
 
-    
     operation(Code.ndwi, 'ndwi', con(0.2, 550))
-
-    
 
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
 
@@ -229,7 +231,6 @@ def index_convert(img):
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
 # jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
-'''
 for _ in range(14, 15):
     i = 3
     im = Image.open(p + "imgtest\\img15.jfif")
@@ -245,5 +246,4 @@ for _ in range(14, 15):
 # na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko
 # można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
 # i wtedy je analizować na ziemi
-'''
 print('finish')

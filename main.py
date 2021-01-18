@@ -1,9 +1,7 @@
 from time import sleep
 from picamera import PiCamera
 import ndvi
-from PIL import Image, ImageDraw, ImageFont
-
-
+from PIL import Image
 
 camera = PiCamera()
 camera.resolution = (1296,972)

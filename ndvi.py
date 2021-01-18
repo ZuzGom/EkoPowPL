@@ -128,8 +128,11 @@ def index_convert(img):
 
         # nie moge zapisac w formacie hsv ;c (hsv my mistake)
         # zapisuje w moim formacie:
-        index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
+        #index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        #index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
+
+        index_bw.save("1_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_col.convert("1_col_" + name + ".jpg")  # picture in color scale
 
         # kolejno: najmniejsza wartość, średnia i największa
         print(min(index_sum))

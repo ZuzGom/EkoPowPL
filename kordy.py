@@ -1,7 +1,6 @@
 import ephem as em
 from numpy import rad2deg
 import math
-import ephem
 
 
 def isstrack():
@@ -10,12 +9,15 @@ def isstrack():
     """
     # global obslat, obslong, dn, latlong, country, admin, city, opisgeo1
 
-    # sposób ze strony
+    # sposob ze strony
 
     name = "ISS (ZARYA)"
 
     line1 = "1 25544U 98067A   21016.23305200  .00001366  00000-0  32598-4 0  9992"
     line2 = "2 25544  51.6457  14.3113 0000235 231.0982 239.8264 15.49297436265049"
+
+    # ^ zmienic przed oddaniem:
+    # http://www.celestrak.com/NORAD/elements/stations.txt
 
     # line1 = "1 25544U 98067A   20316.41516162  .00001589  00000+0  36499-4 0  9995"
     # line2 = "2 25544  51.6454 339.9628 0001882  94.8340 265.2864 15.49409479254842"
@@ -26,9 +28,9 @@ def isstrack():
 
     print(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
 
-    # sposób z poprzednich lat
+    # sposob z poprzednich lat
 
-    obs = ephem.Observer()
+    obs = em.Observer()
     # iss = ephem.readtle(name, line1, line2) # Puts data to ephem
     sun = em.Sun()  # Imports ephem's sun as sun
     twilight = math.radians(-6)

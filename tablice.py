@@ -1,3 +1,9 @@
+drogi = ['1', '2', '3']
+
+''.join(drogi)
+print(drogi)
+'''
+
 drogi = [[1, 2, 3], [3, 2, 1], [ 4,3, 2]]
 
 
@@ -112,3 +118,4 @@ drogi[0][1] += drogi[0][2]
 
 #dodawanie całej listy str
 suma = int(''.join([str(elem) for elem in A])) + int(''.join([str(elem) for elem in tab]))
+'''

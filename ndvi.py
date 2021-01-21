@@ -1,8 +1,8 @@
 # Converting image to NDVI colored scale
 
-from PIL import Image, ImageDraw, ImageFont  # Pillow library
+from PIL import ImageDraw, ImageFont  # Pillow library
 
-p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
+# p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
 '''
 # creating output folder
@@ -53,7 +53,7 @@ def index_convert(img):
                 # ~via Kuba Frączek
                 brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
 
-                if 35 < brightness < 150:  # white and dark spots off
+                if 35 < brightness < 250:  # white and dark spots off
                     index = code(r, g, b)
                     index_sum.append(index)  # add index value to the list t.b.c.
 
@@ -85,8 +85,8 @@ def index_convert(img):
             beg = 10
             if s > 1:
                 s -= 1
-        font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
-        # font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
+        # font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
+        font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
@@ -131,9 +131,9 @@ def index_convert(img):
         # zapisuje w moim formacie:
 
         # works on raspberry pi
-        index_bw.save("1_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_bw.save("2_bw_" + name + ".jpg")  # saves picture in grayscale
         index_col = index_col.convert("RGB")
-        index_col.save("1_col_" + name + ".jpg")  # picture in color scale
+        index_col.save("2_col_" + name + ".jpg")  # picture in color scale
 
         # works on my pc
         # index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
@@ -231,6 +231,9 @@ def index_convert(img):
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
 # jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
+'''
+
+
 for _ in range(14, 15):
     i = 3
     im = Image.open(p + "imgtest\\img15.jfif")
@@ -246,4 +249,5 @@ for _ in range(14, 15):
 # na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko
 # można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
 # i wtedy je analizować na ziemi
+'''
 print('finish')

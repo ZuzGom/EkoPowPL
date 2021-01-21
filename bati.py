@@ -1,7 +1,6 @@
-from imageai.detection import Detection
+import requests
+from bs4 import BeautifulSoup
 
-detector = Detection()
-
-#model
-#input
-#output
+page = requests.get('http://www.celestrak.com/NORAD/elements/stations.txt')
+soup = BeautifulSoup(page.content, 'html.parser')
+page = soup.find()

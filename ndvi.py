@@ -4,24 +4,6 @@ from PIL import ImageDraw, ImageFont  # Pillow library
 
 # p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
-'''
-# creating output folder
-import os
-
-path = os.getcwd()
-print ("The current working directory is %s" % path)
-# define the name of the directory to be created
-path += "\\comp"
-
-try:
-    os.makedirs(path)
-except OSError:
-    print ("Creation of the directory %s failed" % path)
-else:
-    print ("Successfully created the directory %s" % path)
-
-'''
-
 
 def index_convert(img):
     # I get height and width of the image

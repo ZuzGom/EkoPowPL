@@ -14,6 +14,7 @@ camera.capture("image.jpg")
 
 #def capture_film():
 
+
 def film_hd():
     camera.resolution = (1920, 1080)
     camera.framerate = 30
@@ -21,5 +22,23 @@ def film_hd():
     camera.wait_recording(5)
     camera.stop_recording()
 
+
 film_hd()
 
+'''
+# creating output folder
+import os
+
+path = os.getcwd()
+print ("The current working directory is %s" % path)
+# define the name of the directory to be created
+path += "\\comp"
+
+try:
+    os.makedirs(path)
+except OSError:
+    print ("Creation of the directory %s failed" % path)
+else:
+    print ("Successfully created the directory %s" % path)
+
+'''

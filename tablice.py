@@ -2,7 +2,7 @@ drogi = ['1', '2', '3']
 
 ''.join(drogi)
 print(drogi)
-'''
+
 
 drogi = [[1, 2, 3], [3, 2, 1], [ 4,3, 2]]
 

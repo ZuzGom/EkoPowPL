@@ -1,7 +1,7 @@
 import ephem as em
 from numpy import rad2deg
 import math
-
+from bati import track
 
 def isstrack():
     """
@@ -11,16 +11,11 @@ def isstrack():
 
     # sposob ze strony
 
-    name = "ISS (ZARYA)"
-
-    line1 = "1 25544U 98067A   21016.23305200  .00001366  00000-0  32598-4 0  9992"
-    line2 = "2 25544  51.6457  14.3113 0000235 231.0982 239.8264 15.49297436265049"
-
     # ^ zmienic przed oddaniem:
     # http://www.celestrak.com/NORAD/elements/stations.txt
 
-    # line1 = "1 25544U 98067A   20316.41516162  .00001589  00000+0  36499-4 0  9995"
-    # line2 = "2 25544  51.6454 339.9628 0001882  94.8340 265.2864 15.49409479254842"
+
+    name, line1, line2 = track()
 
     iss = em.readtle(name, line1, line2)
 

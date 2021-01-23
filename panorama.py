@@ -16,7 +16,7 @@ names = []  # nazwy plików
 # https://pillow.readthedocs.io/en/stable/reference/Image.html
 
 # zdjęcia niech będą w formacie:
-# gg:mm:ss_lat_long.jpg
+# gg.mm.ss_lat_long.jpg
 for infile in glob.glob("*.jpg"):  # czyta każde zdjęcie w lokalizacji o rozszerzeniu.jpg
 
     file, ext = os.path.splitext(infile)

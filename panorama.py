@@ -66,66 +66,61 @@ for i in range(1, len(cord)):
 print(move)
 print(c)
 
-czy = input('y/n: ')
+p = 410  # przesunięcie x
+q = 90  # przesunięcie y
+size = (1920 + c * p, 1080 + c * q)  # c * p, bo tyle przesunięć ile zdjęć z założeniem że przesunięcie jest takie samo
+print(size)
 
-if czy == 'y':
-    p = 410  # przesunięcie x
-    q = 90  # przesunięcie y
+wynik = Image.new('RGBA', size)  # zdjęcie końcowe
+wpx = wynik.load()  # piksele tegoż
+try:
+    new = Image.open("new_" + names[0] + ".png")  # otwieram pierwszy png
+except IndexError:
+    print('brak zdjęć!')
+else:
+    # do wynikowego zdjęcia wpisuję pierwsze z nich
+    for X in range(0, w):  # width
+        for Y in range(0, h):  # height
+            wpx[X, Y] = new.getpixel((X, Y))
 
-    size = (
-    1920 + c * p, 1080 + c * q)  # c * p, bo tyle przesunięć ile zdjęć z założeniem że przesunięcie jest takie samo
-    print(size)
 
-    wynik = Image.new('RGBA', size)  # zdjęcie końcowe
-    wpx = wynik.load()  # piksele tegoż
-
-    try:
-        new = Image.open("new_" + names[0] + ".png")  # otwieram pierwszy png
-    except IndexError:
-        print('brak zdjęć!')
-    else:
-        # do wynikowego zdjęcia wpisuję pierwsze z nich
+    def przesuniecie(a, b, new2):
+        # funckja porównuje zdjęcie po przesunięciu z wynikiem
         for X in range(0, w):  # width
             for Y in range(0, h):  # height
-                wpx[X, Y] = new.getpixel((X, Y))
-
-
-        def przesuniecie(a, b, new2):
-            # funckja porównuje zdjęcie po przesunięciu z wynikiem
-            for X in range(0, w):  # width
-                for Y in range(0, h):  # height
-                    try:
-                        p = wynik.getpixel((X + a, Y + b))  # wygląda to tak:
-                        # porównywanie nowego zdjęcia zaczyna się w miejscu wyniku po przsunięciu a,b
-                        p2 = new2.getpixel((X, Y))
-                        r1, g1, b1, a1 = p
-                        r2, g2, b2, a2 = p2
-                        if a2 > 0:
-                            if a1 > 0:
-                                if p == p2:
-                                    wpx[X + a, Y + b] = p
-                                else:
-                                    wpx[X + a, Y + b] = (int((r1 + r2) / 2),
-                                                         int((g1 + g2) / 2),
-                                                         int((b1 + b2) / 2), 300)
+                try:
+                    p = wynik.getpixel((X + a, Y + b))  # wygląda to tak:
+                    # porównywanie nowego zdjęcia zaczyna się w miejscu wyniku po przsunięciu a,b
+                    p2 = new2.getpixel((X, Y))
+                    r1, g1, b1, a1 = p
+                    r2, g2, b2, a2 = p2
+                    if a2 > 0:
+                        if a1 > 0:
+                            if p == p2:
+                                wpx[X + a, Y + b] = p
                             else:
-                                wpx[X + a, Y + b] = p2
+                                wpx[X + a, Y + b] = (int((r1 + r2) / 2),
+                                                     int((g1 + g2) / 2),
+                                                     int((b1 + b2) / 2), 300)
+                        else:
+                            wpx[X + a, Y + b] = p2
 
-                    except IndexError:  # błąd zawsze może się zdażyć
-                        p2 = new2.getpixel((X, Y))
-                        wpx[X + a, Y + b] = p2
+                except IndexError:  # błąd zawsze może się zdażyć
+                    p2 = new2.getpixel((X, Y))
+                    wpx[X + a, Y + b] = p2
 
 
-        '''
-        przesuniecie(350, 45, new2)
-        przesuniecie(2*350, 2*45, new3)
-        '''
-        # przesunięcia takie same więc daje for
-        for i in range(1, c + 1):
-            new1 = Image.open("new_" + names[i] + ".png")
-            przesuniecie(i * p, i * q, new1)
-        wynik.save("wynik_new.jpg")
-        print(wynik)
+    '''
+    przesuniecie(350, 45, new2)
+    przesuniecie(2*350, 2*45, new3)
+    '''
+    # przesunięcia takie same więc daje for
+    for i in range(1, c + 1):
+        new1 = Image.open("new_" + names[i] + ".png")
+        przesuniecie(i * p, i * q, new1)
+    wynik.save("wynik_new.png")
+    print(wynik)
+
 
 # można w tym miejscu usunąć wszystkie png
 for infile in glob.glob("*.png"):

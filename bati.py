@@ -2,6 +2,7 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
+
 def track():
     czas = datetime.datetime.now()
     godzina = czas.hour
@@ -15,6 +16,4 @@ def track():
         line2 = calosc[2]
 
         #return name, line1, line2
-    return godzina
-
-print(track())
+    return godzina, name, line1, line2

@@ -3,6 +3,7 @@ from numpy import rad2deg
 import math
 from bati import track
 
+
 def isstrack():
     """
     Calculates data pictures coordinates by using pyephem and reverse-geocoder libraries
@@ -14,8 +15,7 @@ def isstrack():
     # ^ zmienic przed oddaniem:
     # http://www.celestrak.com/NORAD/elements/stations.txt
 
-
-    name, line1, line2 = track()
+    godzina, name, line1, line2 = track()
 
     iss = em.readtle(name, line1, line2)
 
@@ -27,7 +27,7 @@ def isstrack():
 
     obs = em.Observer()
     # iss = ephem.readtle(name, line1, line2) # Puts data to ephem
-    sun = em.Sun()  # Imports ephem's sun as sun
+    sun = em.Moon()  # Imports ephem's sun as sun
     twilight = math.radians(-6)
     obs.lat = iss.sublat
     obs.long = iss.sublong
@@ -45,7 +45,7 @@ def isstrack():
     colat = rad2deg(iss.sublat)
     colong = rad2deg(iss.sublong)
     coordinates = (colat, colong)
-    print(coordinates)
+    return coordinates
 
 
 isstrack()

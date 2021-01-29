@@ -1,9 +1,10 @@
 from time import sleep
-from picamera import PiCamera
-import ndvi
+# from picamera import PiCamera
+
 from PIL import Image
 import glob
 from kordy import isstrack
+import ndvi
 import datetime
 
 now = datetime.datetime.now()
@@ -11,7 +12,7 @@ date = now.strftime("%D_%H.%M.%S_")
 lon, lat = isstrack()
 date += str(lon) + '_' + str(lat)
 
-
+'''
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.start_preview()
@@ -37,6 +38,8 @@ def film_hd():
 
 
 # film_hd()
+'''
+
 
 '''
 # creating output folder

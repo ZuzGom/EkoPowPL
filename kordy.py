@@ -8,12 +8,9 @@ def isstrack():
     """
     Calculates data pictures coordinates by using pyephem and reverse-geocoder libraries
     """
-    # global obslat, obslong, dn, latlong, country, admin, city, opisgeo1
 
     # sposob ze strony
 
-    # ^ zmienic przed oddaniem:
-    # http://www.celestrak.com/NORAD/elements/stations.txt
 
     godzina, name, line1, line2 = track()
 
@@ -21,7 +18,7 @@ def isstrack():
 
     iss.compute()
 
-    print(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
+    #print(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
 
     # sposob z poprzednich lat
 

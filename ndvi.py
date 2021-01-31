@@ -1,13 +1,16 @@
 # Converting image to NDVI colored scale
 
-from PIL import ImageDraw, ImageFont  # Pillow library
+from PIL import ImageDraw, ImageFont, Image  # Pillow library
 import os
 
 # p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
 
-def index_convert(img):
-    date, ext = os.path.splitext(img)
+def index_convert(image):
+    dr = os.path.dirname(image)
+    dr += '/indicies/'
+    date = '.'.join(os.path.basename(image).split('.')[:-1])
+    img = Image.open(image)
     # I get height and width of the image
     w, h = img.size
 
@@ -115,9 +118,9 @@ def index_convert(img):
         # zapisuje w moim formacie:
 
         # works on raspberry pi
-        index_bw.save(date + "_bw_" + name + ".jpg")  # saves picture in grayscale
+        index_bw.save(dr+date + "_bw_" + name + ".jpg")  # saves picture in grayscale
         index_col = index_col.convert("RGB")
-        index_col.save(date + "_col_" + name + ".jpg")  # picture in color scale
+        index_col.save(dr+date + "_col_" + name + ".jpg")  # picture in color scale
 
         # works on my pc
         # index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale

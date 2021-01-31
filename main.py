@@ -1,14 +1,14 @@
 from time import sleep
-# from picamera import PiCamera
+from picamera import PiCamera
 
-from PIL import Image
+
 import glob
 from kordy import isstrack
 import ndvi
 import datetime
 
 now = datetime.datetime.now()
-date = now.strftime("%D_%H.%M.%S_")
+date = now.strftime("%m.%d_%H.%M.%S_")
 lon, lat = isstrack()
 date += str(lon) + '_' + str(lat)
 
@@ -17,12 +17,12 @@ camera.resolution = (640, 480)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
-camera.capture("image\\"+date + ".jpg")
+
+camera.capture('image/ '+date + '.jpg')
 
 
-for infile in glob.glob("image\\*.jpg"):
-    image = Image.open(date + ".jpg")
-    ndvi.index_convert(image)
+for infile in glob.glob("image/*.jpg"):
+    ndvi.index_convert(infile)
 
 
 def film_hd():
@@ -37,7 +37,7 @@ def film_hd():
 
 
 # film_hd()
-'''
+
 
 
 '''
@@ -47,7 +47,7 @@ import os
 path = os.getcwd()
 print ("The current working directory is %s" % path)
 # define the name of the directory to be created
-path += "\\comp"
+path += "\comp"
 
 try:
     os.makedirs(path)
@@ -55,5 +55,4 @@ except OSError:
     print ("Creation of the directory %s failed" % path)
 else:
     print ("Successfully created the directory %s" % path)
-
 '''

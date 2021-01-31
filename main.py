@@ -12,16 +12,15 @@ date = now.strftime("%D_%H.%M.%S_")
 lon, lat = isstrack()
 date += str(lon) + '_' + str(lat)
 
-'''
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
-camera.capture(date + ".jpg")
+camera.capture("image\\"+date + ".jpg")
 
 
-for infile in glob.glob("*.jpg"):
+for infile in glob.glob("image\\*.jpg"):
     image = Image.open(date + ".jpg")
     ndvi.index_convert(image)
 

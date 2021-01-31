@@ -85,23 +85,23 @@ def index_convert(img):
 
         # scale text on the hsv picture
         zo = ImageDraw.Draw(index_col)
-        zo.text((w - 13 - s * 30, hh), "-.2", (0, 0, 200), font=font)
-        zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (0, 0, 200), font=font)
-        zo.text((w - 3 - s * 30, hh + 2 * ss), "0", (0, 0, 200), font=font)
-        zo.text((w - 7 - s * 30, hh + 3 * ss), ".1", (0, 0, 200), font=font)
-        zo.text((w - 7 - s * 30, hh + 4 * ss), ".2", (0, 0, 200), font=font)
-        zo.text((w - 7 - s * 30, hh + 5 * ss), ".3", (0, 0, 200), font=font)
-        zo.text((w - 7 - s * 30, hh + 6 * ss), ".4", (0, 0, 200), font=font)
+        zo.text((w - 13 - s * 30, hh),          "-.2",  (0, 0, 200), font=font)
+        zo.text((w - 13 - s * 30, hh + 1 * ss), "-.1",  (0, 0, 200), font=font)
+        zo.text((w - 3 - s * 30, hh + 2 * ss),  "0",    (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 3 * ss),  ".1",   (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 4 * ss),  ".2",   (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 5 * ss),  ".3",   (0, 0, 200), font=font)
+        zo.text((w - 7 - s * 30, hh + 6 * ss),  ".4",   (0, 0, 200), font=font)
 
         # scale on the grayscale picture
         za = ImageDraw.Draw(index_bw)
-        za.text((w - 13 - s * 30, hh), "-.2", (255, 255, 255), font=font)
-        za.text((w - 13 - s * 30, hh + 1 * ss), "-.1", (255, 255, 255), font=font)
-        za.text((w - 3 - s * 30, hh + 2 * ss), "0", (255, 255, 255), font=font)
-        za.text((w - 7 - s * 30, hh + 3 * ss), ".1", (255, 255, 255), font=font)
-        za.text((w - 7 - s * 30, hh + 4 * ss), ".2", (255, 255, 255), font=font)
-        za.text((w - 7 - s * 30, hh + 5 * ss), ".3", (255, 255, 255), font=font)
-        za.text((w - 7 - s * 30, hh + 6 * ss), ".4", (255, 255, 255), font=font)
+        za.text((w - 13 - s * 30, hh),          "-.2",  (255, 255, 255), font=font)
+        za.text((w - 13 - s * 30, hh + 1 * ss), "-.1",  (255, 255, 255), font=font)
+        za.text((w - 3 - s * 30, hh + 2 * ss),  "0",    (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 3 * ss),  ".1",   (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 4 * ss),  ".2",   (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 5 * ss),  ".3",   (255, 255, 255), font=font)
+        za.text((w - 7 - s * 30, hh + 6 * ss),  ".4",   (255, 255, 255), font=font)
 
         '''
         what scale does:

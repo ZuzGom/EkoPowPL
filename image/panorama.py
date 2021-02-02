@@ -42,6 +42,7 @@ for infile in glob.glob("*.jpg"):  # czyta każde zdjęcie w lokalizacji o rozsz
     '''
 
     file = file.split('_')
+    file = file[1:]
     file[0] = file[0].split('.')
     cord.append(file)  # lista z kordami
     print(im)  # czytam czy się wszystko udało
@@ -128,7 +129,7 @@ else:
                     p2 = new2.getpixel((X, Y))
                     wpx[X + a, Y + b] = p2
         print("save" + str(i))
-        wynik.save("wynik" + str(i) + "_new.png")
+        wynik.save("panorama/wynik" + str(i) + "_new.png")
 
 
     '''

@@ -31,5 +31,4 @@ def track():
 
     return czas, name, line1, line2
 
-
 #print(track())

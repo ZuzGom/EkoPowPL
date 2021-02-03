@@ -5,7 +5,6 @@ import os
 
 # p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
-
 def index_convert(image):
     dr = os.path.dirname(image)
     dr += '/indicies/'
@@ -212,14 +211,12 @@ def index_convert(image):
 
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
 
-
 # #####################_MAIN_######################
 
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
 # jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
 # zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
 '''
-
 
 for _ in range(14, 15):
     i = 3

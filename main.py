@@ -1,7 +1,5 @@
 from time import sleep
 from picamera import PiCamera
-
-
 import glob
 from kordy import isstrack
 import ndvi
@@ -20,10 +18,8 @@ sleep(2)
 
 camera.capture('image/ '+date + '.jpg')
 
-
 for infile in glob.glob("image/*.jpg"):
     ndvi.index_convert(infile)
-
 
 def film_hd():
     camera.resolution = (1920, 1080)
@@ -35,10 +31,7 @@ def film_hd():
     camera.wait_recording(60)
     camera.stop_recording()
 
-
 # film_hd()
-
-
 
 '''
 # creating output folder

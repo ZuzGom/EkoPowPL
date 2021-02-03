@@ -3,7 +3,6 @@ from numpy import rad2deg
 import math
 from bati import track
 
-
 def isstrack():
     """
     Calculates data pictures coordinates by using pyephem and reverse-geocoder libraries
@@ -47,6 +46,5 @@ def isstrack():
     colong = rad2deg(iss.sublong)
     coordinates = (colat, colong)
     return coordinates  # zwraca kordy uzywane min donazw plikow i tabelki
-
 
 isstrack()

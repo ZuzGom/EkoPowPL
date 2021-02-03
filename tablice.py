@@ -3,14 +3,11 @@ drogi = ['1', '2', '3']
 ''.join(drogi)
 print(drogi)
 
-
 drogi = [[1, 2, 3], [3, 2, 1], [ 4,3, 2]]
-
 
 while 1 in drogi[0]:
     drogi[0].remove(1)
 print(drogi)
-
 
 A=[]
 tab=[[]]

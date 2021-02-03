@@ -11,14 +11,18 @@ def isstrack():
 
     # sposob ze strony
 
-
-    godzina, name, line1, line2 = track()
-
+    czas, name, line1, line2 = track()
+    # pobieram najbardziej aktualne dane korygujace
     iss = em.readtle(name, line1, line2)
 
     iss.compute()
 
-    #print(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
+    # wczytuję do pliku z sygnatura czasowa
+    back = open('kordynaty.txt', 'a')
+    back.write('\n'+str(czas) + '\n')
+    back.write(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
+    back.write('\n')
+    back.close()
 
     # sposob z poprzednich lat
 
@@ -42,7 +46,7 @@ def isstrack():
     colat = rad2deg(iss.sublat)
     colong = rad2deg(iss.sublong)
     coordinates = (colat, colong)
-    return coordinates
+    return coordinates  # zwraca kordy uzywane min donazw plikow i tabelki
 
 
 isstrack()

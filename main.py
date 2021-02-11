@@ -1,15 +1,17 @@
 from time import sleep
 from picamera import PiCamera
-import glob
 from kordy import isstrack
 from ndvi import index_convert
 import datetime
-from logzero import logfile, logger
+import sys
+
+
 now = datetime.datetime.now()
 date = now.strftime("%m.%d_%H.%M.%S_")
 lon, lat, country = isstrack()
 date += str(lon) + '_' + str(lat) + '_' + country
-logfile("EkoPowPL.log")
+
+sys.stdout = open('EkoPowPL.log', 'w')
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.start_preview()
@@ -30,6 +32,10 @@ def film_hd():
     camera.stop_recording()
 
 # film_hd()
+
+
+sys.stdout.close()
+
 
 '''
 # creating output folder

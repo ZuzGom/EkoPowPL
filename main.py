@@ -2,24 +2,22 @@ from time import sleep
 from picamera import PiCamera
 import glob
 from kordy import isstrack
-import ndvi
+from ndvi import index_convert
 import datetime
-
+from logzero import logfile, logger
 now = datetime.datetime.now()
 date = now.strftime("%m.%d_%H.%M.%S_")
 lon, lat, country = isstrack()
 date += str(lon) + '_' + str(lat) + '_' + country
-
+logfile("EkoPowPL.log")
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
-
-camera.capture('image/ '+date + '.jpg')
-
-for infile in glob.glob("image/*.jpg"):
-    ndvi.index_convert(infile)
+name = 'image/ '+date + '.jpg'
+camera.capture(name)
+index_convert(name)
 
 def film_hd():
     camera.resolution = (1920, 1080)

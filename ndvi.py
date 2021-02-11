@@ -5,6 +5,7 @@ import os
 
 # p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
+
 def index_convert(image):
     dr = os.path.dirname(image)
     dr += '/indicies/'
@@ -71,8 +72,8 @@ def index_convert(image):
             beg = 10
             if s > 1:
                 s -= 1
-        # font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
-        font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
+        font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
+        # font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
@@ -131,6 +132,10 @@ def index_convert(image):
         print(min(index_sum))
         print(sum(index_sum) / len(index_sum))
         print(max(index_sum))
+
+        dane = [name, (min(index_sum), sum(index_sum) / len(index_sum), max(index_sum))]
+        return dane
+    out = []
 
     class Code:
         # I define indices functions (mostly) from:
@@ -203,14 +208,14 @@ def index_convert(image):
     operation(Code.ergbve, 'ergbve', con(0.2, 300))
     operation(Code.gli, 'gli', con(0.01, 2000))
     operation(Code.rgbvi, 'rgbvi', con(0.2, 450))
-    operation(Code.ndvi, 'ndvi', con(0.35, 300))
-    operation(Code.rgi, 'rgi', con(-0.6, 200))
+    
+    
     '''
-
-    operation(Code.ndwi, 'ndwi', con(0.2, 550))
-
+    out.append(operation(Code.ndvi, 'ndvi', con(0.35, 300)))
+    out.append(operation(Code.ndwi, 'ndwi', con(0.2, 300)))
+    out.append(operation(Code.rgi, 'rgi', con(-1, 100)))
     # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
-
+    return out
 # #####################_MAIN_######################
 
 # moje obrazy testowe są w formacie img1, img2... imgn więc...
@@ -234,4 +239,3 @@ for _ in range(14, 15):
 # można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
 # i wtedy je analizować na ziemi
 '''
-print('finish')

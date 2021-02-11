@@ -10,9 +10,8 @@ def isstrack():
 
     # sposob ze strony
 
-    czas, name, line1, line2 = track()
+    czas, name = track()
     # pobieram najbardziej aktualne dane korygujace
-    iss = em.readtle(name, line1, line2)
 
     iss.compute()
 

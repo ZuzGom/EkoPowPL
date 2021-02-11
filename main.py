@@ -7,8 +7,8 @@ import datetime
 
 now = datetime.datetime.now()
 date = now.strftime("%m.%d_%H.%M.%S_")
-lon, lat = isstrack()
-date += str(lon) + '_' + str(lat)
+lon, lat, country = isstrack()
+date += str(lon) + '_' + str(lat) + '_' + country
 
 camera = PiCamera()
 camera.resolution = (640, 480)

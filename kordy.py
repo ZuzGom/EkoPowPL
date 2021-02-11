@@ -1,7 +1,6 @@
 import ephem as em
-from numpy import rad2deg
-import math
-from bati import track
+import reverse_geocoder as rg
+
 
 def isstrack():
     """
@@ -10,40 +9,21 @@ def isstrack():
 
     # sposob ze strony
 
-    czas, name = track()
-    # pobieram najbardziej aktualne dane korygujace
+    name = "ISS (ZARYA)"
+    line1 = "1 25544U 98067A   21042.30870520  .00003041  00000-0  63421-4 0  9992"
+    line2 = "2 25544  51.6440 245.3345 0002839 359.6306 175.5159 15.48962705269087"
+
+    iss = em.readtle(name, line1, line2)
 
     iss.compute()
 
-    # wczytuję do pliku z sygnatura czasowa
-    back = open('kordynaty.txt', 'a')
-    back.write('\n'+str(czas) + '\n')
-    back.write(f"{iss.sublat / em.degree} {iss.sublong / em.degree}")
-    back.write('\n')
-    back.close()
+    lon = iss.sublat / em.degree
+    lat = iss.sublong / em.degree
 
-    # sposob z poprzednich lat
+    results = rg.search((lon, lat), mode=1)
 
-    obs = em.Observer()
-    # iss = ephem.readtle(name, line1, line2) # Puts data to ephem
-    sun = em.Moon()  # Imports ephem's sun as sun
-    twilight = math.radians(-6)
-    obs.lat = iss.sublat
-    obs.long = iss.sublong
-    obslat = obs.lat
-    obslong = obs.long
-    obs.elevation = 0
-    sun.compute(obs)
-    sun_angle = math.degrees(sun.alt)
-    # Day or Night
-    dn = 'Day' if sun_angle > twilight else 'Night'
-
-    latlong = ("Lat %s - Long %s" % (iss.sublat, iss.sublong))
-
-    # Searching data of site under ISS
-    colat = rad2deg(iss.sublat)
-    colong = rad2deg(iss.sublong)
-    coordinates = (colat, colong)
-    return coordinates  # zwraca kordy uzywane min donazw plikow i tabelki
-
-isstrack()
+    country = str([row['cc'] for row in results][0])
+    city = str([row['name'] for row in results][0])
+    admin = str([row['admin1'] for row in results][0])
+    opisgeo = country + '-' + admin + '-' + city
+    return lon, lat, opisgeo

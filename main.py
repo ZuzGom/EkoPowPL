@@ -12,6 +12,10 @@ import sys
 
 from kordy import isstrack
 from ndvi import index_convert
+from rgb import if_black
+
+
+### funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 41)
 
 sys.stdout = open('EkoPowPL.log', 'w')
 
@@ -28,7 +32,6 @@ date = now.strftime("%m.%d_%H.%M.%S_")
 lon, lat, country = isstrack()
 date += str(lon) + '_' + str(lat) + '_' + country
 
-
 camera = PiCamera()
 camera.resolution = (1624, 1080)
 camera.start_preview()
@@ -36,6 +39,8 @@ camera.start_preview()
 sleep(2)
 name = 'image/'+date + '.jpg'
 camera.capture(name)
+if if_black(name):
+    print('Noc')
 dane = index_convert(name)
 
 

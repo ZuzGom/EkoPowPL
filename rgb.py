@@ -1,13 +1,32 @@
 # Converting image to NDVI colored scale
 
-from PIL import ImageDraw, ImageFont, Image  # Pillow library
+from PIL import Image  # Pillow library
 import os
 
 
 p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
 
 
-def rgb_convert(image):
+def if_black(image):
+    img = Image.open(image)
+    img = img.convert('RGB')
+    w, h = img.size
+    x = int(w/4)
+    y = int(h/2)
+    c = 0
+    for X in range(x, 2*x):  # width
+        for Y in range(y-5, y+5):  # height
+            pixel_rgb = img.getpixel((X, Y))  # Get pixel's RGB values
+            brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
+            if brightness > 30:
+                c += 1
+    if c > int(x):
+        return False
+    else:
+        return True
+
+
+def check_clouds(image):
     dr = os.path.dirname(image)
     dr += '/indicies/'
     date = '.'.join(os.path.basename(image).split('.')[:-1])
@@ -46,7 +65,7 @@ def rgb_convert(image):
             # ~via Kuba Frączek
             brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
 
-            if brightness > 130:  # white and dark spots off
+            if brightness > 130:
 
                 px_b[X, Y] = (b, b, b)
                 px_r[X, Y] = (r, r, r)

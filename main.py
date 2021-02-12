@@ -1,3 +1,9 @@
+# coding: utf-8
+# program written by EkoPowPL Team from Jaslo (Poland) for
+# AstroPi competition 2020/2021
+# Team Members: Zuzanna Gomuła, Jakub Frączek, Jakub Batycki, Kamil Kras, Bartosz Królikowski, Wojciech Lupa
+# Teachers: Wincenty Skwarek
+
 import psutil
 from time import sleep
 from picamera import PiCamera
@@ -10,8 +16,10 @@ from ndvi import index_convert
 sys.stdout = open('EkoPowPL.log', 'w')
 
 path = sys.path
-bytes_avail = psutil.disk_usage(path).free
+bytes_avail = psutil.disk_usage(path[0]).free
 gigabytes_avail = bytes_avail / 1024 / 1024
+for x in path:
+    print(x)
 print('Space left (MB): ')
 print(gigabytes_avail)
 
@@ -22,7 +30,7 @@ date += str(lon) + '_' + str(lat) + '_' + country
 
 
 camera = PiCamera()
-camera.resolution = (640, 480)
+camera.resolution = (1624, 1080)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
@@ -32,12 +40,12 @@ dane = index_convert(name)
 
 
 def film_hd():
-    camera.resolution = (1920, 1080)
+    camera.resolution = (1624, 1080)
     camera.framerate = 30
     camera.start_recording('video/' + date + '.h264')
     camera.wait_recording(5)
     camera.stop_recording()
-    camera.start_recording('video/' + date + '.h264')
+    camera.start_recording('video/lon' + date + '.h264')
     camera.wait_recording(60)
     camera.stop_recording()
 

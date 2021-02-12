@@ -161,13 +161,15 @@ if LandPixels > 0:
 
 imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 
-data = open('LightIntensity.csv', 'a')
-dane = ["Datetime: "+str(imageDatetime)]
-dane += [";   AverageRelativeLuminance: "+str(AverageRelativeLuminance)]
-dane += [";  AverageRelativeLuminanceWithoutWindowBorders: "+str(AverageRelativeLuminance2)]
-dane += [";    AverageWaterRelativeLuminance: "+str(AverageWaterRelativeLuminance)]
-dane += ['\n']
-data.writelines(str(dane))
+data = open('LightIntensity.csv', 'w')
+data.writelines("Datetime: ;"
+                "AverageRelativeLuminance:  ;"
+                "AverageRelativeLuminanceWithoutWindowBorders:    ;"
+                "AverageWaterRelativeLuminance: \n")
+data.write(str(imageDatetime)+';' +
+           str(AverageRelativeLuminance) + ';' +
+           str(AverageRelativeLuminance2)+';' +
+           str(AverageWaterRelativeLuminance)+'\n')
 data.close()
 
 imgWater.save("_Water.jpg")

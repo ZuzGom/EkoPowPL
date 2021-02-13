@@ -10,6 +10,7 @@ from picamera import PiCamera
 import datetime
 import sys
 
+from LightIntensity import lightIntensity
 import sHat
 from kordy import isstrack
 from ndvi import index_convert
@@ -46,7 +47,13 @@ camera.capture(name)
 if if_black(name):
     print('Noc')
     sHat.nightTime()
+sHat.hourglass_s1()
 dane = index_convert(name)
+sHat.hourglass_s2()
+
+sHat.hourglass_s3()
+lightIntensity(name)
+sHat.hourglass_s4()
 
 
 def film_hd():

@@ -16,172 +16,148 @@
 from PIL import Image  # Pillow library
 import datetime
 
-img = Image.open("test.jpg")
-img = img.convert('RGB')
+def lightIntensity(name):
 
-width = img.width
-height = img.height
+    img = Image.open(name)
 
-# creating copy, so it won't overwrite original picture
-imgWater = img.copy().convert('HSV')
-pixelsWater = imgWater.load()
+    img = img.convert('RGB')
 
-# creating copy, so it won't overwrite original picture
-imgClouds = img.copy()
-pixelsClouds = imgClouds.load()
+    width = img.width
+    height = img.height
 
-# creating copy, so it won't overwrite original picture
-imgLand = img.copy()
-pixelsLand = imgLand.load()
+    # creating copy, so it won't overwrite original picture
+    imgWater = img.copy().convert('HSV')
+    pixelsWater = imgWater.load()
 
-RelativeLuminance = 0
+    RelativeLuminance = 0
 
-# AverageRelativeLuminance is responsible for average Relative Luminance of all picture, including window
-AverageRelativeLuminance = 0
+    # AverageRelativeLuminance is responsible for average Relative Luminance of all picture, including window
+    AverageRelativeLuminance = 0
 
-# AverageRelativeLuminance2 is responsible for average Relative Luminance of all picture, excluding window
-AverageRelativeLuminance2 = 0
+    # AverageRelativeLuminance2 is responsible for average Relative Luminance of all picture, excluding window
+    AverageRelativeLuminance2 = 0
 
-# auxiliary variable
-AverageRelativeLuminance2pixels = 0
+    # auxiliary variable
+    AverageRelativeLuminance2pixels = 0
 
-# Variables used for calculating average Luminance of water
-WaterRelativeLuminance = 0
-WaterPixels = 0
-AverageWaterRelativeLuminance = 0
+    # Variables used for calculating average Luminance of water
+    WaterRelativeLuminance = 0
+    WaterPixels = 0
+    AverageWaterRelativeLuminance = 0
 
-# Variables used for calculating average Luminance of clouds and snow
-CloudsRelativeLuminance = 0
-CloudsPixels = 0
-AverageCloudsRelativeLuminance = 0
+    # Variables used for calculating average Luminance of clouds and snow
+    CloudsRelativeLuminance = 0
+    CloudsPixels = 0
+    AverageCloudsRelativeLuminance = 0
 
-# Variables used for calculating average Luminance of Land
-LandRelativeLuminance = 0
-LandPixels = 0
-AverageLandRelativeLuminance = 0
+    # Variables used for calculating average Luminance of Land
+    LandRelativeLuminance = 0
+    LandPixels = 0
+    AverageLandRelativeLuminance = 0
 
-# Loop #1, responsible for:
-# - calculating average Luminance of all picture
-# - separating water form picture, using NDWI index
+    # Loop #1, responsible for:
+    # - calculating average Luminance of all picture
+    # - separating water form picture, using NDWI index
 
-for X in range(0, width):  # image width
-    for Y in range(0, height):  # image height
+    for X in range(0, width):  # image width
+        for Y in range(0, height):  # image height
 
-        # Original image pixels
-        pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
-        R, G, B = pixelRGB  # divide RBG into sigle variables
+            # Original image pixels
+            pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
+            R, G, B = pixelRGB  # divide RBG into sigle variables
 
-        # Calculates RelativeLuminance
-        RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
-        RelativeLuminance = int(RelativeLuminance)
-        AverageRelativeLuminance += RelativeLuminance
+            # Calculates RelativeLuminance
+            RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
+            RelativeLuminance = int(RelativeLuminance)
+            AverageRelativeLuminance += RelativeLuminance
 
-        # Calculates NDWI and casts it to 0-360 (so far so good)
-        if(R+G) > 0:
-            NDWI = (R - G) / (R + G)
+            # Calculates NDWI and casts it to 0-360 (so far so good)
+            if(R+G) > 0:
+                NDWI = (R - G) / (R + G)
 
-            # cast from (-1,1) to (0,360)
-            NDWI *= 180
-            NDWI += 180
+                # cast from (-1,1) to (0,360)
+                NDWI *= 180
+                NDWI += 180
 
-            if NDWI < 160:
-                # ~via Zuzia
-                pixelsWater[X, Y] = (int(NDWI), 200, 200)  # HSV
-                pixelsLand[X, Y] = (0, 0, 0)
-                pixelsClouds[X, Y] = (0, 0, 0)
-            else:
+                if NDWI < 160:
+                    # ~via Zuzia
+                    pixelsWater[X, Y] = (int(NDWI), 200, 200)  # HSV
+                else:
+                    pixelsWater[X, Y] = (0, 0, 0)
+
+    # converting to RGB, because I opened it in HSV earlier
+    imgWater = imgWater.convert('RGB')
+    pixelsWater = imgWater.load()
+
+    # calculating average Luminance of whole picture, AverageRelativeLuminance divided by total pixels
+    AverageRelativeLuminance /= width*height
+
+    # Loop #2, responsible for:
+    # - calculating average Luminance of water + clouds + snow + land
+    # - separating water from the rest of the picture
+    # - separating window from the rest of the picture
+
+    for X in range(0, width):  # image width
+        for Y in range(0, height):  # image height
+
+            # Original image pixels
+            pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
+            R, G, B = pixelRGB  # divide RBG into sigle variables
+
+            # Liczy RelativeLuminance
+            RelativeLuminance = (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
+            RelativeLuminance = int(RelativeLuminance)
+
+            # If Luminance of the pixel is less than average Luminance of whole picture divided by 3, it is window
+
+            if RelativeLuminance < (AverageRelativeLuminance / 3):
                 pixelsWater[X, Y] = (0, 0, 0)
-
-# converting to RGB, because I opened it in HSV earlier
-imgWater = imgWater.convert('RGB')
-pixelsWater = imgWater.load()
-
-pixelsLand = imgLand.load()
-
-# calculating average Luminance of whole picture, AverageRelativeLuminance divided by total pixels
-AverageRelativeLuminance /= width*height
-
-# Loop #2, responsible for:
-# - calculating average Luminance of water + clouds + snow + land
-# - separating water from the rest of the picture
-# - separating window from the rest of the picture
-
-for X in range(0, width):  # image width
-    for Y in range(0, height):  # image height
-
-        # Original image pixels
-        pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
-        R, G, B = pixelRGB  # divide RBG into sigle variables
-
-        # Liczy RelativeLuminance
-        RelativeLuminance = (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
-        RelativeLuminance = int(RelativeLuminance)
-
-        # If Luminance of the pixel is less than average Luminance of whole picture divided by 3, it is window
-
-        if RelativeLuminance < (AverageRelativeLuminance / 3):
-            pixelsLand[X, Y] = (0, 0, 0)
-            pixelsClouds[X, Y] = (0, 0, 0)
-            pixelsWater[X, Y] = (0, 0, 0)
-        else:
-            # if pixels are not considered as window then average Luminance for the rest of the picture is calculated
-            AverageRelativeLuminance2 += RelativeLuminance
-            AverageRelativeLuminance2pixels += 1
+            else:
+                # if pixels are not considered as window then average Luminance for the rest of the picture is calculated
+                AverageRelativeLuminance2 += RelativeLuminance
+                AverageRelativeLuminance2pixels += 1
 
 
 
-        # imgWater opened in RGB
-        pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
-        Rw, Gw, Bw = pixelRGBWater  # divide RBG into single variables
+            # imgWater opened in RGB
+            pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
+            Rw, Gw, Bw = pixelRGBWater  # divide RBG into single variables
 
-        # imgLand opened in RGB
-        pixelRGBLand = imgLand.getpixel((X, Y))
-        Rl, Gl, Bl = pixelRGBLand
+            if Rw != 0 or Gw != 0 or Bw != 0:  # RGB values for water
+                WaterRelativeLuminance += RelativeLuminance
+                WaterPixels += 1
 
-        if Rw != 0 or Gw != 0 or Bw != 0:  # RGB values for water
-            WaterRelativeLuminance += RelativeLuminance
-            WaterPixels += 1
-
-        brightness=int((R+B+G)/3)
-
-        if R>=200:
-            CloudsRelativeLuminance += RelativeLuminance
-            CloudsPixels += 1
-            pixelsLand[X, Y] = (0,0,0)
-        else:
-            pixelsClouds[X, Y] = (0,0,0)
-            LandRelativeLuminance += RelativeLuminance
-            LandPixels += 1
+            if R>=200: # separetes clouds and land
+                CloudsRelativeLuminance += RelativeLuminance
+                CloudsPixels += 1
+            else:
+                LandRelativeLuminance += RelativeLuminance
+                LandPixels += 1
 
 
+    if AverageRelativeLuminance2pixels > 0:
+        AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
 
-AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
-print(AverageRelativeLuminance2)
+    if WaterPixels > 0:
+        AverageWaterRelativeLuminance = WaterRelativeLuminance/WaterPixels
 
+    if CloudsPixels > 0:
+        AverageCloudsRelativeLuminance = CloudsRelativeLuminance/CloudsPixels
 
-if WaterPixels > 0:
-    AverageWaterRelativeLuminance = WaterRelativeLuminance/WaterPixels
-print(AverageWaterRelativeLuminance)
-if CloudsPixels > 0:
-    AverageCloudsRelativeLuminance = CloudsRelativeLuminance/CloudsPixels
-print(AverageCloudsRelativeLuminance)
-if LandPixels > 0:
-    AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
-print(AverageLandRelativeLuminance)
+    if LandPixels > 0:
+        AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
 
-imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
+    imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 
-data = open('LightIntensity.csv', 'w')
-data.writelines("Datetime: ;"
-                "AverageRelativeLuminance:  ;"
-                "AverageRelativeLuminanceWithoutWindowBorders:    ;"
-                "AverageWaterRelativeLuminance: \n")
-data.write(str(imageDatetime)+';' +
-           str(AverageRelativeLuminance) + ';' +
-           str(AverageRelativeLuminance2)+';' +
-           str(AverageWaterRelativeLuminance)+'\n')
-data.close()
-
-imgWater.save("_Water.jpg")
-imgClouds.save("_Clouds.jpg")
-imgLand.save("_Land.jpg")
+    data = open('LightIntensity.csv', 'w')
+    data.writelines("Datetime: ;"
+                    "AverageRelativeLuminanceWithoutWindowBorders:    ;"
+                    "AverageWaterRelativeLuminance"
+                    "AverageCloudsRelativeLuminance"
+                    "AverageLandRelativeLuminance \n")
+    data.write(str(imageDatetime)+';' +
+               str(AverageRelativeLuminance2) + ';' +
+               str(AverageWaterRelativeLuminance)+';' +
+               str(AverageCloudsRelativeLuminance) + ';' +
+               str(AverageLandRelativeLuminance)+'\n')
+    data.close()

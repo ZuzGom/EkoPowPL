@@ -78,16 +78,17 @@ for X in range(0, width):  # image width
 
         # Calculates NDWI and casts it to 0-360 (so far so good)
         if(R+G) > 0:
-
             NDWI = (R - G) / (R + G)
 
             # cast from (-1,1) to (0,360)
-            NDWI *= 130
-            NDWI += 130
+            NDWI *= 180
+            NDWI += 180
 
-            if NDWI < 115:
+            if NDWI < 160:
                 # ~via Zuzia
                 pixelsWater[X, Y] = (int(NDWI), 200, 200)  # HSV
+                pixelsLand[X, Y] = (0, 0, 0)
+                pixelsClouds[X, Y] = (0, 0, 0)
             else:
                 pixelsWater[X, Y] = (0, 0, 0)
 
@@ -116,15 +117,18 @@ for X in range(0, width):  # image width
         RelativeLuminance = (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
         RelativeLuminance = int(RelativeLuminance)
 
-        # If Luminance of the pixel is less than average Luminance of whole picture, it is window
+        # If Luminance of the pixel is less than average Luminance of whole picture divided by 3, it is window
 
         if RelativeLuminance < (AverageRelativeLuminance / 3):
             pixelsLand[X, Y] = (0, 0, 0)
+            pixelsClouds[X, Y] = (0, 0, 0)
+            pixelsWater[X, Y] = (0, 0, 0)
         else:
             # if pixels are not considered as window then average Luminance for the rest of the picture is calculated
-
             AverageRelativeLuminance2 += RelativeLuminance
             AverageRelativeLuminance2pixels += 1
+
+
 
         # imgWater opened in RGB
         pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
@@ -134,30 +138,36 @@ for X in range(0, width):  # image width
         pixelRGBLand = imgLand.getpixel((X, Y))
         Rl, Gl, Bl = pixelRGBLand
 
-        if Rl == 0 and Gl == 0 and Bl == 0:  # RGB values for land
-            pixelsWater[X, Y] = (0, 0, 0)
-            pixelsClouds[X, Y] = (0, 0, 0)  # erasing windows from picture with clouds
-
-        elif Rw != 0 or Gw != 0 or Bw != 0:  # RGB values for water
-
-            # Korzystając z okazji, wymazuję wodę ze zdjęć z chmurami i lądem ^_^
-            pixelsLand[X, Y] = (0, 0, 0)
-            pixelsClouds[X, Y] = (0, 0, 0)
-
+        if Rw != 0 or Gw != 0 or Bw != 0:  # RGB values for water
             WaterRelativeLuminance += RelativeLuminance
             WaterPixels += 1
+
+        brightness=int((R+B+G)/3)
+
+        if R>=200:
+            CloudsRelativeLuminance += RelativeLuminance
+            CloudsPixels += 1
+            pixelsLand[X, Y] = (0,0,0)
+        else:
+            pixelsClouds[X, Y] = (0,0,0)
+            LandRelativeLuminance += RelativeLuminance
+            LandPixels += 1
+
+
 
 AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
 print(AverageRelativeLuminance2)
 
+
 if WaterPixels > 0:
     AverageWaterRelativeLuminance = WaterRelativeLuminance/WaterPixels
-
+print(AverageWaterRelativeLuminance)
 if CloudsPixels > 0:
     AverageCloudsRelativeLuminance = CloudsRelativeLuminance/CloudsPixels
-
+print(AverageCloudsRelativeLuminance)
 if LandPixels > 0:
     AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
+print(AverageLandRelativeLuminance)
 
 imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 

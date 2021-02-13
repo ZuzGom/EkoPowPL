@@ -4,10 +4,7 @@ from PIL import Image  # Pillow library
 import os
 
 
-p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
-
-
-def if_black(image):
+def if_black(image):  # path to image
     img = Image.open(image)
     img = img.convert('RGB')
     w, h = img.size
@@ -26,7 +23,7 @@ def if_black(image):
         return True
 
 
-def check_clouds(image):
+def check_clouds(image):  # path to image
     dr = os.path.dirname(image)
     dr += '/indicies/'
     date = '.'.join(os.path.basename(image).split('.')[:-1])
@@ -89,36 +86,3 @@ def check_clouds(image):
     img_rgb.save(p + "rgb\\" + str(i) + "_org.jpg")
 
 
-        # print('zdjęcie nr. ' + str(i))  # Warum hier???
-
-        # ####### skala ######
-
-
-
-# #####################_MAIN_######################
-
-# moje obrazy testowe są w formacie img1, img2... imgn więc...
-# jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
-# zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
-
-num = [2, 4, 15]
-
-for i in num:
-    #im = Image.open(p + "imgtest\\img15.jfif")
-    image = (p + "imgtest\\img" + str(i) + ".jpg")
-
-    # I get average and maximum NDVI value, ndvi pic and color pic
-    rgb_convert(image)
-    # I changed it, so index_convert is a separated function, which can be called on any picture
-
-      # saves original picture to compare
-
-# funkcja działa wolno niestety, będziemy musieli zdecydować ktore zdjecie zostawimy albo nie wykonywac tego na stacji
-# na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko
-# można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
-# i wtedy je analizować na ziemi
-'''
-index_convert('image\\image.jpg')
-index_convert('image\\image (1).jpg')
-'''
-print('finish')

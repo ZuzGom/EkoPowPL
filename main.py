@@ -52,7 +52,7 @@ dane = index_convert(name)
 sHat.hourglass_s2()
 
 sHat.hourglass_s3()
-lightIntensity(name)
+lightIntensity(name, date)
 sHat.hourglass_s4()
 
 

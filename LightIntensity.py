@@ -16,7 +16,7 @@
 from PIL import Image  # Pillow library
 import datetime
 
-def lightIntensity(name):
+def lightIntensity(name ,date):
 
     img = Image.open(name)
 
@@ -151,11 +151,13 @@ def lightIntensity(name):
 
     data = open('LightIntensity.csv', 'w')
     data.writelines("Datetime: ;"
+                    "Date: ;"
                     "AverageRelativeLuminanceWithoutWindowBorders:    ;"
-                    "AverageWaterRelativeLuminance"
-                    "AverageCloudsRelativeLuminance"
+                    "AverageWaterRelativeLuminance: ;"
+                    "AverageCloudsRelativeLuminance: ;"
                     "AverageLandRelativeLuminance \n")
     data.write(str(imageDatetime)+';' +
+               str(date) + ';' +
                str(AverageRelativeLuminance2) + ';' +
                str(AverageWaterRelativeLuminance)+';' +
                str(AverageCloudsRelativeLuminance) + ';' +

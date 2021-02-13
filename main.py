@@ -10,7 +10,7 @@ from picamera import PiCamera
 import datetime
 import sys
 
-from sHat import sense_set
+import sHat
 from kordy import isstrack
 from ndvi import index_convert
 from rgb import if_black
@@ -18,7 +18,7 @@ from rgb import if_black
 
 ### funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 41)
 
-sense_set.welcomeMessage()
+sHat.welcomeMessage()
 
 sys.stdout = open('EkoPowPL.log', 'w')
 
@@ -40,17 +40,17 @@ camera.resolution = (1624, 1080)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
-sense_set.camera()
+sHat.camera()
 name = 'image/'+date + '.jpg'
 camera.capture(name)
 if if_black(name):
     print('Noc')
-    sense_set.nightTime()
+    sHat.nightTime()
 dane = index_convert(name)
 
 
 def film_hd():
-    sense_set.camera()
+    sHat.camera()
     camera.resolution = (1624, 1080)
     camera.framerate = 30
     camera.start_recording('video/' + date + '.h264')

@@ -89,41 +89,39 @@ hourglass_s4 = [
     em, tl, tl, tl, tl, tl, tl, em,
 ]
 
-class sense_set:
-
-    def welcomeMessage(self):
-        sense.show_message("Hello ISS! Greetings from EkoPowPL!", scroll_speed=(0.08))
+def welcomeMessage():
+    sense.show_message("Hello ISS! Greetings from EkoPowPL!", scroll_speed=(0.08))
 
 
-    def camera(self):
-        sense.clear()
-        sense.set_pixels(sense_camera)
+def camera():
+    sense.clear()
+    sense.set_pixels(sense_camera)
 
 
-    def nightTime(self):
-        sense.clear()
-        sense.set_pixels(night_time)
+def nightTime():
+    sense.clear()
+    sense.set_pixels(night_time)
 
 
-    def hourglass_s1(self):
-        sense.clear()
-        sense.set_pixels(hourglass_s1)
+def hourglass_s1():
+    sense.clear()
+    sense.set_pixels(hourglass_s1)
 
 
-    def hourglass_s2(self):
-        sense.clear()
-        sense.set_pixels(hourglass_s2)
+def hourglass_s2():
+    sense.clear()
+    sense.set_pixels(hourglass_s2)
 
 
-    def hourglass_s3(self):
-        sense.clear()
-        sense.set_pixels(hourglass_s3)
+def hourglass_s3():
+    sense.clear()
+    sense.set_pixels(hourglass_s3)
 
 
-    def hourglass_s4(self):
-        sense.clear()
-        sense.set_pixels(hourglass_s4)
+def hourglass_s4():
+    sense.clear()
+    sense.set_pixels(hourglass_s4)
 
 
-    def clear(self):
-        sense.clear()
+def clear():
+    sense.clear()

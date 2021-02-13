@@ -25,19 +25,19 @@ sys.stdout = open('EkoPowPL.log', 'w')
 
 path = sys.path
 bytes_avail = psutil.disk_usage(path[0]).free
-gigabytes_avail = bytes_avail / 1024 / 1024
+megabytes_avail = bytes_avail / 1024 / 1024
 for x in path:
     print(x)
 print('Space left (MB): ')
-print(gigabytes_avail)
+print(megabytes_avail)
 
 now = datetime.datetime.now()
 date = now.strftime("%m.%d_%H.%M.%S_")
 lon, lat, country = isstrack()
-date += str(lon) + '_' + str(lat) + '_' + country
+date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
 
 camera = PiCamera()
-camera.resolution = (1624, 1080)
+camera.resolution = (2048,1536)
 camera.start_preview()
 # Camera warm-up time
 sleep(2)
@@ -56,18 +56,14 @@ lightIntensity(name)
 sHat.hourglass_s4()
 
 
-def film_hd():
+def film_hd(s):
     sHat.camera()
-    camera.resolution = (1624, 1080)
-    camera.framerate = 30
+    camera.resolution = (1920, 1080)
     camera.start_recording('video/' + date + '.h264')
-    camera.wait_recording(5)
-    camera.stop_recording()
-    camera.start_recording('video/lon' + date + '.h264')
-    camera.wait_recording(60)
+    camera.wait_recording(s)
     camera.stop_recording()
 
-# film_hd()
+# film_hd(5)
 
 
 sys.stdout.close()

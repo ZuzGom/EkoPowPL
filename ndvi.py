@@ -3,8 +3,6 @@
 from PIL import ImageDraw, ImageFont, Image  # Pillow library
 import os
 
-# p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
-
 
 def index_convert(image):
     dr = os.path.dirname(image)
@@ -17,6 +15,8 @@ def index_convert(image):
     # function below is useful, because it can be used to many various indexes defined after
     def operation(code, name, contrast):
         # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, funkcja kontrastu
+        # name of index func, name to save in file, contrast func
+        
         # for every single index, that's what happen:
         nonlocal img
         print('index: ' + name)
@@ -50,15 +50,13 @@ def index_convert(image):
                     # one picture in GRAYSCALE (r +b +g equals gray (or white (or black)))
                     px_index_col[X, Y] = (index, 200, 200)
                     # and one picture in HSV, in which H is index, so index value is one color of the spectrum
-                    # i figured it out by myself ngl
 
-        # print('zdjęcie nr. ' + str(i))  # Warum hier???
 
-        # ####### skala ######
+        # ####### scale ######
 
-        s = int((h - 100) / 200)  # skala skali (sprawdzam ile razy w h miesci sie dlugosc skali)
+        s = int((h - 100) / 200)  # scale of the scale (I check how many times it could fit)
         if s > 1:
-            s -= 1  # zmiejszam i tak
+            s -= 1  # however its still to big, unless it would be too small to exist
 
         end = s * 200 + 100
         beg = 100
@@ -72,8 +70,8 @@ def index_convert(image):
             beg = 10
             if s > 1:
                 s -= 1
-        font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
-        # font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
+        # font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
+        font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
@@ -110,25 +108,18 @@ def index_convert(image):
         what scale does:
         - fits in any picture above 300 px height
         - change its value according to contrast on the picture
-        - if the average index value is too high or too low, the scale can do mad things to fit
+        - if the average index value is too high or too low, the scale can do things to fit
         - ...
         '''
 
-        # nie moge zapisac w formacie hsv ;c (hsv my mistake)
-        # zapisuje w moim formacie:
-
-        # works on raspberry pi
+        # works on raspberry pi:
         index_bw.save(dr+date + "_bw_" + name + ".jpg")  # saves picture in grayscale
         index_col = index_col.convert("RGB")
         index_col.save(dr+date + "_col_" + name + ".jpg")  # picture in color scale
 
-        # works on my pc
-        # index_bw.save(p + "final\\" + str(i) + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        # index_col.convert("RGB").save(p + "final\\" + str(i) + "_col_" + name + ".jpg")  # picture in color scale
-
         # print('worked')
 
-        # kolejno: najmniejsza wartość, średnia i największa
+        # max value, average, and min
         print(min(index_sum))
         print(sum(index_sum) / len(index_sum))
         print(max(index_sum))
@@ -202,40 +193,17 @@ def index_convert(image):
         return con_new
 
     # IMPORTANT! comment if needn't:
-
     '''
     operation(Code.vari, 'vari', con(0.15, 500))
     operation(Code.ergbve, 'ergbve', con(0.2, 300))
     operation(Code.gli, 'gli', con(0.01, 2000))
     operation(Code.rgbvi, 'rgbvi', con(0.2, 450))
     
-    
     '''
-    out.append(operation(Code.ndvi, 'ndvi', con(0.35, 300)))
-    out.append(operation(Code.ndwi, 'ndwi', con(0.2, 300)))
-    out.append(operation(Code.rgi, 'rgi', con(-1, 100)))
-    # w pythonie argumentami funkcji mogą być inne funkcje, czy to nie cudowne?
+    operation(Code.ndwi, 'ndwi', con(0.2, 550))
+    operation(Code.ndvi, 'ndvi', con(0.35, 300))
+    operation(Code.rgi, 'rgi', con(-0.6, 200))
+
     return out
-# #####################_MAIN_######################
 
-# moje obrazy testowe są w formacie img1, img2... imgn więc...
-# jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
-# zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
-'''
 
-for _ in range(14, 15):
-    i = 3
-    im = Image.open(p + "imgtest\\img15.jfif")
-    image = Image.open(p + "imgtest\\img" + str(i) + ".jpg")
-
-    # I get average and maximum NDVI value, ndvi pic and color pic
-    index_convert(image)
-    # I changed it, so index_convert is a separated function, which can be called on any picture
-
-    image.save(p+"final\\" + str(i) + "_org.jpg")  # saves original picture to compare
-
-# funkcja działa wolno niestety, będziemy musieli zdecydować ktore zdjecie zostawimy albo nie wykonywac tego na stacji
-# na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko
-# można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
-# i wtedy je analizować na ziemi
-'''

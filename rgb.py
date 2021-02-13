@@ -24,9 +24,7 @@ def if_black(image):  # path to image
 
 
 def check_clouds(image):  # path to image
-    dr = os.path.dirname(image)
-    dr += '/indicies/'
-    date = '.'.join(os.path.basename(image).split('.')[:-1])
+    date = '.'.join(os.path.basename(image).split('.')[:-1])  # image name
     img = Image.open(image)
     # I get height and width of the image
     w, h = img.size
@@ -52,14 +50,17 @@ def check_clouds(image):  # path to image
             pixel_rgb = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
 
             R, G, B = pixel_rgb
+
+            # kontrasty
             r = (R-120)*2
             g = (G-120)*2
             b = (B-120)*2
             o = (b - g) * 5
-            if o < 0:
-                o = 0
+            # to jednak nienajlepszy sposób (wariuje dla wody chociażby)
+            # tak czy inaczej, Kamil jeśli to czytasz, możesz zrobić jakąkolwiek funkcję która sprawdza stężenie chmur
+            # może być taka która liczy to co wyżej plus zwykłe białe piksele
+            # i jak jest drastyczna różnica to powyższe ignoruje
 
-            # ~via Kuba Frączek
             brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
 
             if brightness > 130:
@@ -68,6 +69,7 @@ def check_clouds(image):  # path to image
                 px_r[X, Y] = (r, r, r)
                 px_g[X, Y] = (g, g, g)
                 px_o[X, Y] = (b, b, b, o)
+                # transparentność "o" to miara ilości chmury, b b b sprawia, że wygląda to ładnie
                 if o < 0:
                     px_o[X, Y] = (o, o, o, 0)
             else:
@@ -75,14 +77,10 @@ def check_clouds(image):  # path to image
                 px_r[X, Y] = (0, 0, 0)
                 px_g[X, Y] = (0, 0, 0)
                 px_o[X, Y] = (0, 0, 0, 0)
-                # one picture in GRAYSCALE (r +b +g equals gray (or white (or black)))
-                # and one picture in HSV, in which H is index, so index value is one color of the spectrum
-                # i figured it out by myself ngl
-    print(px_o[100,100])
-    blue.save(p + "rgb\\" + date + "_blue.jpg")
-    green.save(p + "rgb\\" + date + "_green.jpg")
-    red.save(p + "rgb\\" + date + "_red.jpg")
-    out.save(p + "rgb\\" + date + "_zout.png")
-    img_rgb.save(p + "rgb\\" + str(i) + "_org.jpg")
+
+    blue.save("rgb\\" + date + "_blue.jpg")
+    green.save("rgb\\" + date + "_green.jpg")
+    red.save("rgb\\" + date + "_red.jpg")
+    out.save("rgb\\" + date + "_zout.png")
 
 

@@ -7,8 +7,9 @@
 import psutil
 from time import sleep
 from picamera import PiCamera
-import datetime
+from datetime import datetime, timedelta
 import sys
+import os
 
 from LightIntensity import lightIntensity
 import sHat
@@ -17,75 +18,99 @@ from ndvi import index_convert
 from rgb import if_black
 
 
-### funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 41)
+# funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 84)
+# początek dużej pętli
+
 sys.stdout = open('EkoPowPL.log', 'w')
+
+start = datetime.now()
 
 sHat.welcomeMessage()
 
-start = datetime.datetime.now()
-
 path = sys.path
-bytes_avail = psutil.disk_usage(path[0]).free
-megabytes_avail = bytes_avail / 1024 / 1024
 for x in path:
     print(x)
+
+bytes_avail = psutil.disk_usage(path[0]).free
+megabytes_avail = bytes_avail / 1024 / 1024
 print('Space left (MB): ')
 print(megabytes_avail)
 
 camera = PiCamera()
 
 
-def high_def(s, img):
+def high_def(img):
     camera.resolution = (2048, 1536)
     camera.start_preview()
     # Camera warm-up time
-    sleep(s)
+    sleep(2)
     sHat.camera()
     camera.capture(img)
 
 
-def low_def(s, img):
+def low_def(img):
     camera.resolution = (480, 320)
     camera.start_preview()
     # Camera warm-up time
-    sleep(s)
+    sleep(2)
     sHat.camera()
     camera.capture(img)
 
 
 def film_hd(s):
     sHat.camera()
-    camera.resolution = (1920, 1080)
+    camera.resolution = (1080, 1080)
     camera.start_recording('video/' + date + '.h264')
     camera.wait_recording(s)
     camera.stop_recording()
 
 
+last = datetime.now() - timedelta(minutes=5)
+
 while True:
-    now = datetime.datetime.now()
-    date = now.strftime("%m.%d_%H.%M.%S_")
-    lon, lat, country = isstrack()
-    date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
+    now = datetime.now()
+    if now > start + timedelta(minutes=165):
+        break
+    if now > last + timedelta(minutes=5):
+        last = datetime.now()
+        date = now.strftime("%m.%d_%H.%M.%S_")
+        lon, lat, country = isstrack()
+        date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
+        print(date)
 
-    camera = PiCamera()
+        name = 'image/' + date + '.jpg'
+        low = 'image/low_' + date + '.jpg'
+        low_def(low)
+        if not if_black(low):
 
-    name = 'image/' + date + '.jpg'
+            high_def(name)
 
-    if if_black(name):
-        print('Noc')
-        sHat.nightTime()
-    sHat.hourglass_s1()
-    dane = index_convert(name)
-    sHat.hourglass_s2()
+            sHat.hourglass_s1()
+            dane = index_convert(name)
+            sHat.hourglass_s2()
 
-    sHat.hourglass_s3()
-    lightIntensity(name, date)
-    sHat.hourglass_s4()
+            sHat.hourglass_s3()
+            lightIntensity(name, date)
+            sHat.hourglass_s4()
 
+        else:
+            os.remove(low)
+            print('Noc')
+            sHat.nightTime()
 
+        # miejsce na zapisanie danych
 
+# till the end less that 15 minutes left
 
-# film_hd(5)
+bytes_avail = psutil.disk_usage(path[0]).free
+megabytes_avail = bytes_avail / 1024 / 1024
+print('Space left (MB): ')
+print(megabytes_avail)
+
+now = datetime.now()
+
+if now < start + timedelta(minutes=168) and megabytes_avail > 300:
+    film_hd(600)
 
 
 sys.stdout.close()

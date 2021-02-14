@@ -1,13 +1,15 @@
 # Converting image to NDVI colored scale
 
 from PIL import ImageDraw, ImageFont, Image  # Pillow library
-import os
 
 
 def index_convert(image):
-    dr = os.path.dirname(image)
+    dr = ''
+    path = image.split("/")
+    for p in path[:-1]:
+        dr += p + '/'
     dr += '/indicies/'
-    date = '.'.join(os.path.basename(image).split('.')[:-1])
+    date = '.'.join(path[-1].split('.')[:-1])
     img = Image.open(image)
     # I get height and width of the image
     w, h = img.size
@@ -16,7 +18,7 @@ def index_convert(image):
     def operation(code, name, contrast):
         # ^^ kolejno: nazwa funkcji indeksu, nazwa do zapisania w pliku, funkcja kontrastu
         # name of index func, name to save in file, contrast func
-        
+
         # for every single index, that's what happen:
         nonlocal img
         print('index: ' + name)
@@ -51,7 +53,6 @@ def index_convert(image):
                     px_index_col[X, Y] = (index, 200, 200)
                     # and one picture in HSV, in which H is index, so index value is one color of the spectrum
 
-
         # ####### scale ######
 
         s = int((h - 100) / 200)  # scale of the scale (I check how many times it could fit)
@@ -70,8 +71,10 @@ def index_convert(image):
             beg = 10
             if s > 1:
                 s -= 1
-        # font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
-        font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
+        try:
+            font = ImageFont.truetype("FreeMono.ttf", 2 + s * 10)  # for linux
+        except OSError:
+            font = ImageFont.truetype("arial.ttf", 2 + s * 10)  # for windows
 
         for x in range(w - 10 - s * 10, w - 10):
             n = -0.2
@@ -112,10 +115,15 @@ def index_convert(image):
         - ...
         '''
 
-        # works on raspberry pi:
-        index_bw.save(dr+date + "_bw_" + name + ".jpg")  # saves picture in grayscale
-        index_col = index_col.convert("RGB")
-        index_col.save(dr+date + "_col_" + name + ".jpg")  # picture in color scale
+        try:
+            # works on raspberry pi:
+            index_bw.save(dr + date + "_bw_" + name + ".jpg")  # saves picture in grayscale
+            index_col = index_col.convert("RGB")
+            index_col.save(dr + date + "_col_" + name + ".jpg")  # picture in color scale
+        except FileNotFoundError:
+            index_bw.save(date + "_bw_" + name + ".jpg")  # saves picture in grayscale
+            index_col = index_col.convert("RGB")
+            index_col.save(date + "_col_" + name + ".jpg")  # picture in color scale
 
         # print('worked')
 
@@ -207,3 +215,4 @@ def index_convert(image):
     return out
 
 
+index_convert('image/image.jpg')

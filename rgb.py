@@ -1,7 +1,6 @@
 # Converting image to NDVI colored scale
 
 from PIL import Image  # Pillow library
-import os
 
 
 def if_black(image):  # path to image
@@ -24,7 +23,8 @@ def if_black(image):  # path to image
 
 
 def check_clouds(image):  # path to image
-    date = '.'.join(os.path.basename(image).split('.')[:-1])  # image name
+    path = image.split("/")[-1]
+    date = '.'.join(path.split('.')[:-1])  # image name
     img = Image.open(image)
     # I get height and width of the image
     w, h = img.size
@@ -41,7 +41,6 @@ def check_clouds(image):  # path to image
     px_r = red.load()  # and hsv one
     px_g = green.load()
     px_o = out.load()
-    index_sum = []  # list of every pixel's index
 
     # checking every single pixel
 
@@ -78,9 +77,13 @@ def check_clouds(image):  # path to image
                 px_g[X, Y] = (0, 0, 0)
                 px_o[X, Y] = (0, 0, 0, 0)
 
-    blue.save("rgb\\" + date + "_blue.jpg")
-    green.save("rgb\\" + date + "_green.jpg")
-    red.save("rgb\\" + date + "_red.jpg")
-    out.save("rgb\\" + date + "_zout.png")
-
-
+    try:
+        blue.save("rgb/" + date + "_blue.jpg")
+        green.save("rgb/" + date + "_green.jpg")
+        red.save("rgb/" + date + "_red.jpg")
+        out.save("rgb/" + date + "_zout.png")
+    except FileNotFoundError:
+        blue.save(date + "_blue.jpg")
+        green.save(date + "_green.jpg")
+        red.save(date + "_red.jpg")
+        out.save(date + "_zout.png")

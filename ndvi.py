@@ -213,6 +213,3 @@ def index_convert(image):
     operation(Code.rgi, 'rgi', con(-0.6, 200))
 
     return out
-
-
-index_convert('image/image.jpg')

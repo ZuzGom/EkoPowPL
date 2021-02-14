@@ -23,6 +23,7 @@ def if_black(image):  # path to image
 
 
 def check_clouds(image):  # path to image
+    counter = 0
     path = image.split("/")[-1]
     date = '.'.join(path.split('.')[:-1])  # image name
     img = Image.open(image)
@@ -42,19 +43,16 @@ def check_clouds(image):  # path to image
     px_g = green.load()
     px_o = out.load()
 
-    # checking every single pixel
-
     for X in range(0, w):  # width
         for Y in range(0, h):  # height
             pixel_rgb = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
 
             R, G, B = pixel_rgb
 
-            # kontrasty
             r = (R-120)*2
             g = (G-120)*2
             b = (B-120)*2
-            o = (b - g) * 5
+            o = (b - g) * 5  # 0=0 CHMURY NIEMA o=255 JEST
             # to jednak nienajlepszy sposób (wariuje dla wody chociażby)
             # tak czy inaczej, Kamil jeśli to czytasz, możesz zrobić jakąkolwiek funkcję która sprawdza stężenie chmur
             # może być taka która liczy to co wyżej plus zwykłe białe piksele
@@ -68,6 +66,7 @@ def check_clouds(image):  # path to image
                 px_r[X, Y] = (r, r, r)
                 px_g[X, Y] = (g, g, g)
                 px_o[X, Y] = (b, b, b, o)
+                counter += 1
                 # transparentność "o" to miara ilości chmury, b b b sprawia, że wygląda to ładnie
                 if o < 0:
                     px_o[X, Y] = (o, o, o, 0)
@@ -76,6 +75,8 @@ def check_clouds(image):  # path to image
                 px_r[X, Y] = (0, 0, 0)
                 px_g[X, Y] = (0, 0, 0)
                 px_o[X, Y] = (0, 0, 0, 0)
+
+    cp_clouds = counter / (w * h) * 100
 
     try:
         blue.save("rgb/" + date + "_blue.jpg")
@@ -87,3 +88,4 @@ def check_clouds(image):  # path to image
         green.save(date + "_green.jpg")
         red.save(date + "_red.jpg")
         out.save(date + "_zout.png")
+    return cp_clouds

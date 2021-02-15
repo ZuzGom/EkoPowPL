@@ -1,5 +1,9 @@
 from sense_hat import SenseHat
 
+"""
+Displays, various images on sense hat, depending on task being performed
+"""
+
 sense = SenseHat()
 sense.clear()
 
@@ -13,7 +17,7 @@ em = (0, 0, 0)  # empty
 re = (255, 0, 0)  # red
 yl = (255, 255, 0)  # yellow
 pu = (60, 30, 60)  # purple
-tl = (50, 50, 50)  # metalic
+tl = (51, 51, 51)  # metalic
 sa = (139, 90, 20)  # sand
 
 sense_camera = [

@@ -59,7 +59,7 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
-#To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do petli to poszlo
+#To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
 def analysis_zuz_fra():
     name = 'image/' + date + '.jpg'
     high_def(name)

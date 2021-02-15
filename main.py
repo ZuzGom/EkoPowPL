@@ -42,18 +42,12 @@ camera = PiCamera()
 
 def high_def(img):
     camera.resolution = (2048, 1536)
-    camera.start_preview()
-    # Camera warm-up time
-    sleep(2)
     sHat.camera()
     camera.capture(img)
 
 
 def low_def(img):
     camera.resolution = (480, 320)
-    camera.start_preview()
-    # Camera warm-up time
-    sleep(2)
     sHat.camera()
     camera.capture(img)
 
@@ -78,7 +72,12 @@ def analiza_zuz_fra():
     sHat.hourglass_s4()
 
 def robienie_serii():
+    pierwsza_i=0
 
+    for j in range(10):
+        high_def(("seria" + str(pierwsza_i) + "_" + str(j) + ".jpg")
+
+    pierwsza_i+=1;
 
 
 thread1 = Thread(target=analiza_zuz_fra(), args=(1,))
@@ -103,6 +102,17 @@ while True:
         low_def(low)
         if not if_black(low):
             analiza_zuz_fra()
+
+            ilosc_serii = 0
+
+            if ilosc_serii < 8
+                #Nie wiem co wstawic jako argument
+                if check_clouds()> 15
+                    robienie_serii()
+                    ilosc_serii+=1
+
+
+
 
         else:
             os.remove(low)

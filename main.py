@@ -84,8 +84,6 @@ def taking_serie(amount_serie):
 
 thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
 thread2 = Thread(target=taking_serie(amount_serie), args=(1,))
-thread1.start()
-thread2.start()
 
 last = datetime.now() - timedelta(minutes=5)
 
@@ -103,16 +101,12 @@ while True:
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-            #analiza_zuz_fra()
-            #lub
-            #thread1.start()
+            thread1.start()
 
             if ilosc_serii < 9
                 #Nie wiem co wstawic jako argument
                 if check_clouds(low)> 15
-                    #robienie_serii(amount_serie)
-                    #lub
-                    #thread2.start()
+                    thread2.start()
                     amount_serie+=1
 
         else:

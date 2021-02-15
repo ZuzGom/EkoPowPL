@@ -8,6 +8,7 @@ import psutil
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime, timedelta
+from threading import Thread
 import sys
 import os
 
@@ -64,6 +65,8 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
+thread1 = Thread(target=low_def('jej.jpg'), args=(1,))
+thread1.start()
 
 last = datetime.now() - timedelta(minutes=5)
 
@@ -114,20 +117,3 @@ if now < start + timedelta(minutes=168) and megabytes_avail > 300:
 
 
 sys.stdout.close()
-
-'''
-# creating output folder
-import os
-
-path = os.getcwd()
-print ("The current working directory is %s" % path)
-# define the name of the directory to be created
-path += "\\comp"
-
-try:
-    os.makedirs(path)
-except OSError:
-    print ("Creation of the directory %s failed" % path)
-else:
-    print ("Successfully created the directory %s" % path)
-'''

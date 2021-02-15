@@ -80,10 +80,10 @@ def taking_serie(ilosc_serii):
 
     first_i+=1;
 
-ilosc_serii = 1
+amount_serii = 1
 
 thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
-thread2 = Thread(target=taking_serie(ilosc_serii), args=(1,))
+thread2 = Thread(target=taking_serie(amount_serii), args=(1,))
 thread1.start()
 thread2.start()
 
@@ -107,11 +107,10 @@ while True:
             #lub
             #thread1.start()
 
-
             if ilosc_serii < 9
                 #Nie wiem co wstawic jako argument
                 if check_clouds(low)> 15
-                    #robienie_serii(ilosc_serii)
+                    #robienie_serii(amount_serii)
                     #lub
                     #thread2.start()
                     ilosc_serii+=1

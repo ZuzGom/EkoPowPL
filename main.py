@@ -133,4 +133,5 @@ low_def(low)
 if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:
     film_hd(600)
 
+sHat.clear()
 sys.stdout.close()

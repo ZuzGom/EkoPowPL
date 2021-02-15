@@ -109,7 +109,7 @@ while True:
 
             if ilosc_serii < 8
                 #Nie wiem co wstawic jako argument
-                if check_clouds()> 15
+                if check_clouds(low)> 15
                     robienie_serii()
                     ilosc_serii+=1
 

@@ -15,15 +15,15 @@ Y = 0.2126*R + 0.7152G + 0.0722B.
 reference: https://en.wikipedia.org/wiki/Relative_luminance
 """
 
-"""
-Calculates Relative luminance for clouds and snow, water, land.
-Outputs data and saves it to '.csv' file. This data will be used for analysis on Earth.
-"""
-
 from PIL import Image
 import datetime
 
 def lightIntensity(name ,date):
+
+    """
+    Calculates Relative luminance for clouds and snow, water, land.
+    Outputs data and saves it to '.csv' file. This data will be used for analysis on Earth.
+    """
 
     img = Image.open(name)
     img = img.convert('RGB')

@@ -65,6 +65,7 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
+
 thread1 = Thread(target=low_def('jej.jpg'), args=(1,))
 thread1.start()
 
@@ -81,11 +82,10 @@ while True:
         date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
         print(date)
 
-        name = 'image/' + date + '.jpg'
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-
+            name = 'image/' + date + '.jpg'
             high_def(name)
 
             sHat.hourglass_s1()
@@ -111,9 +111,13 @@ print('Space left (MB): ')
 print(megabytes_avail)
 
 now = datetime.now()
+date = now.strftime("%m.%d_%H.%M.%S_")
+lon, lat, country = isstrack()
+date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
+low = 'image/low_' + date + '.jpg'
+low_def(low)
 
-if now < start + timedelta(minutes=168) and megabytes_avail > 300:
+if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:
     film_hd(600)
-
 
 sys.stdout.close()

@@ -72,18 +72,18 @@ def analysis_zuz_fra():
     lightIntensity(name, date)
     sHat.hourglass_s4()
 
-def taking_serie(ilosc_serii):
+amount_serie=1
+
+def taking_serie(amount_serie):
 
     for j in range(10):
-        high_def(("serie" + str(ilosc_serii) + "_" + str(j) + ".jpg")
+        high_def(("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
 
     first_i+=1;
 
-amount_serii = 1
-
 thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
-thread2 = Thread(target=taking_serie(amount_serii), args=(1,))
+thread2 = Thread(target=taking_serie(amount_serie), args=(1,))
 thread1.start()
 thread2.start()
 
@@ -110,10 +110,10 @@ while True:
             if ilosc_serii < 9
                 #Nie wiem co wstawic jako argument
                 if check_clouds(low)> 15
-                    #robienie_serii(amount_serii)
+                    #robienie_serii(amount_serie)
                     #lub
                     #thread2.start()
-                    ilosc_serii+=1
+                    amount_serie+=1
 
         else:
             os.remove(low)

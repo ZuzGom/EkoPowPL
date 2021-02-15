@@ -59,7 +59,8 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
-def analiza_zuz_fra():
+#To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do petli to poszlo
+def analysis_zuz_fra():
     name = 'image/' + date + '.jpg'
     high_def(name)
 
@@ -71,17 +72,18 @@ def analiza_zuz_fra():
     lightIntensity(name, date)
     sHat.hourglass_s4()
 
-def robienie_serii():
-    pierwsza_i=0
+def taking_serie():
+    first_i=0
 
     for j in range(10):
-        high_def(("seria" + str(pierwsza_i) + "_" + str(j) + ".jpg")
+        high_def(("serie" + str(first_i) + "_" + str(j) + ".jpg")
+        sleep(10)
 
-    pierwsza_i+=1;
+    first_i+=1;
 
 
-thread1 = Thread(target=analiza_zuz_fra(), args=(1,))
-thread2 = Thread(target=robienie_serii(), args=(1,))
+thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
+thread2 = Thread(target=taking_serie(), args=(1,))
 thread1.start()
 thread2.start()
 
@@ -110,9 +112,6 @@ while True:
                 if check_clouds()> 15
                     robienie_serii()
                     ilosc_serii+=1
-
-
-
 
         else:
             os.remove(low)

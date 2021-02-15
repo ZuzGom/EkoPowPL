@@ -16,7 +16,7 @@ from LightIntensity import lightIntensity
 import sHat
 from kordy import isstrack
 from ndvi import index_convert
-from rgb import if_black
+from rgb import if_black, check_clouds
 
 
 # funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 84)
@@ -65,9 +65,26 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
+def analiza_zuz_fra():
+    name = 'image/' + date + '.jpg'
+    high_def(name)
 
-thread1 = Thread(target=low_def('jej.jpg'), args=(1,))
+    sHat.hourglass_s1()
+    dane = index_convert(name)
+    sHat.hourglass_s2()
+
+    sHat.hourglass_s3()
+    lightIntensity(name, date)
+    sHat.hourglass_s4()
+
+def robienie_serii():
+
+
+
+thread1 = Thread(target=analiza_zuz_fra(), args=(1,))
+thread2 = Thread(target=robienie_serii(), args=(1,))
 thread1.start()
+thread2.start()
 
 last = datetime.now() - timedelta(minutes=5)
 
@@ -85,16 +102,7 @@ while True:
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-            name = 'image/' + date + '.jpg'
-            high_def(name)
-
-            sHat.hourglass_s1()
-            dane = index_convert(name)
-            sHat.hourglass_s2()
-
-            sHat.hourglass_s3()
-            lightIntensity(name, date)
-            sHat.hourglass_s4()
+            analiza_zuz_fra()
 
         else:
             os.remove(low)

@@ -16,7 +16,7 @@ pu = (60, 30, 60)  # purple
 tl = (50, 50, 50)  # metalic
 sa = (139, 90, 20)  # sand
 
-sense_camera = [
+Msense_camera = [
 
     em, em, em, em, em, em, em, em,
     em, em, rG, rG, rG, rG, em, em,
@@ -29,7 +29,7 @@ sense_camera = [
 
 ]
 
-night_time = [
+Mnight_time = [
 
     pu, pu, pu, pu, pu, pu, pu, pu,
     pu, pu, pu, yl, yl, yl, pu, pu,
@@ -41,7 +41,7 @@ night_time = [
     pu, pu, pu, pu, pu, pu, pu, pu,
 ]
 
-hourglass_s1 = [
+Mhourglass_s1 = [
 
     em, tl, tl, tl, tl, tl, tl, em,
     em, tl, sa, sa, sa, sa, tl, em,
@@ -53,7 +53,7 @@ hourglass_s1 = [
     em, tl, tl, tl, tl, tl, tl, em,
 ]
 
-hourglass_s2 = [
+Mhourglass_s2 = [
 
     em, tl, tl, tl, tl, tl, tl, em,
     em, tl, em, em, em, sa, tl, em,
@@ -65,7 +65,7 @@ hourglass_s2 = [
     em, tl, tl, tl, tl, tl, tl, em,
 ]
 
-hourglass_s3 = [
+Mhourglass_s3 = [
 
     em, tl, tl, tl, tl, tl, tl, em,
     em, tl, em, em, em, em, tl, em,
@@ -77,7 +77,7 @@ hourglass_s3 = [
     em, tl, tl, tl, tl, tl, tl, em,
 ]
 
-hourglass_s4 = [
+Mhourglass_s4 = [
 
     em, tl, tl, tl, tl, tl, tl, em,
     em, tl, em, em, em, em, tl, em,
@@ -95,32 +95,32 @@ def welcomeMessage():
 
 def camera():
     sense.clear()
-    sense.set_pixels(sense_camera)
+    sense.set_pixels(Msense_camera)
 
 
 def nightTime():
     sense.clear()
-    sense.set_pixels(night_time)
+    sense.set_pixels(Mnight_time)
 
 
 def hourglass_s1():
     sense.clear()
-    sense.set_pixels(hourglass_s1)
+    sense.set_pixels(Mhourglass_s1)
 
 
 def hourglass_s2():
     sense.clear()
-    sense.set_pixels(hourglass_s2)
+    sense.set_pixels(Mhourglass_s2)
 
 
 def hourglass_s3():
     sense.clear()
-    sense.set_pixels(hourglass_s3)
+    sense.set_pixels(Mhourglass_s3)
 
 
 def hourglass_s4():
     sense.clear()
-    sense.set_pixels(hourglass_s4)
+    sense.set_pixels(Mhourglass_s4)
 
 
 def clear():

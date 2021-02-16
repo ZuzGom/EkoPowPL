@@ -81,7 +81,7 @@ def taking_serie(amount_serie):
         high_def(("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
 
-    amount_serie += -1
+    amount_serie += 1
 
     #Nie wiem do czego to coś
     #first_i+=1

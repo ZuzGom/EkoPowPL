@@ -35,9 +35,6 @@ def lightIntensity(name ,date):
     imgWater = img.copy().convert('HSV')
     pixelsWater = imgWater.load()
 
-    # Relative luminance of given pixel
-    RelativeLuminance = 0
-
     # AverageRelativeLuminance is responsible for average Relative Luminance of all picture, including window
     AverageRelativeLuminance = 0
 
@@ -154,13 +151,16 @@ def lightIntensity(name ,date):
         AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
 
     if WaterPixels > 0:
-        AverageWaterRelativeLuminance /= WaterPixels
+        AverageWaterRelativeLuminance =  WaterRelativeLuminance / WaterPixels
+        print(AverageWaterRelativeLuminance)
 
     if CloudsPixels > 0:
-        AverageCloudsRelativeLuminance /= CloudsPixels
+        AverageCloudsRelativeLuminance = CloudsRelativeLuminance /  CloudsPixels
+        print(AverageCloudsRelativeLuminance)
 
     if LandPixels > 0:
-        AverageLandRelativeLuminance /= LandPixels
+        AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
+        print(AverageLandRelativeLuminance)
 
     imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 

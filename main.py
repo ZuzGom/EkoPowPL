@@ -39,6 +39,17 @@ print('Space left (MB): ')
 print(megabytes_avail)
 
 camera = PiCamera()
+now = datetime.now()
+amount_serie = 1
+ln, lt = 0, 0
+
+
+def getn():  # creates name with current data
+    global now, ln, lt
+    timest = now.strftime("%m.%d_%H.%M.%S_")
+    ln, lt, cn = isstrack()
+    timest += str(int(ln)) + '_' + str(int(lt)) + '_' + cn
+    return timest
 
 
 def high_def(img):
@@ -56,61 +67,61 @@ def low_def(img):
 def film_hd(s):
     sHat.camera()
     camera.resolution = (1080, 1080)
-    camera.start_recording('video/' + date + '.h264')
+    camera.start_recording('video/' + getn() + '.h264')
     camera.wait_recording(s)
     camera.stop_recording()
 
-#To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
-def analysis_zuz_fra():
-    name = 'image/' + date + '.jpg'
+# To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
+
+
+def analysis():
+    global ln, lt
+    dat = getn()
+    name = 'image/' + dat + '.jpg'
     high_def(name)
 
     sHat.hourglass_s1()
-    dane = index_convert(name)
+    dane = index_convert(name, ln, lt)
+    print(dane)
     sHat.hourglass_s2()
 
     sHat.hourglass_s3()
-    lightIntensity(name, date)
+    lightIntensity(name, dat)
     sHat.hourglass_s4()
 
-amount_serie=1
 
-def taking_serie(amount_serie):
-
+def taking_serie():
+    global amount_serie
     for j in range(10):
-        high_def(("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
+        high_def("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
-
     amount_serie += 1
 
-    #Nie wiem do czego to coś
-    #first_i+=1
 
-thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
-thread2 = Thread(target=taking_serie(amount_serie), args=(1,))
+thread1 = Thread(target=analysis(), args=(1,))
+thread2 = Thread(target=taking_serie(), args=(1,))
 
 last = datetime.now() - timedelta(minutes=5)
 
 while True:
-    now = datetime.now()
     if now > start + timedelta(minutes=165):
         break
     if now > last + timedelta(minutes=5):
         last = datetime.now()
-        date = now.strftime("%m.%d_%H.%M.%S_")
+        date_time = now.strftime("%m.%d_%H.%M.%S_")
         lon, lat, country = isstrack()
-        date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
+        date = getn()
         print(date)
 
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-            thread1.start()
-
-            if ilosc_serii < 9:
-                if check_clouds(low) >  15:
+            if amount_serie < 9:
+                thread1.start()
+                if check_clouds(low) > 15:
                     thread2.start()
-
+            else:
+                analysis()
         else:
             os.remove(low)
             print('Noc')
@@ -125,11 +136,7 @@ megabytes_avail = bytes_avail / 1024 / 1024
 print('Space left (MB): ')
 print(megabytes_avail)
 
-now = datetime.now()
-date = now.strftime("%m.%d_%H.%M.%S_")
-lon, lat, country = isstrack()
-date += str(int(lon)) + '_' + str(int(lat)) + '_' + country
-low = 'image/low_' + date + '.jpg'
+low = 'image/low_' + getn() + '.jpg'
 low_def(low)
 
 if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:

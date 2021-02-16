@@ -2,8 +2,12 @@
 
 from PIL import ImageDraw, ImageFont, Image  # Pillow library
 
+data = open('index_convert.csv', 'w')
+data.writelines("Name: ;Longtitude: ; Latitude: ;Index name: ;Maximum: ;Average: ;Minimum: \n")
+data.close()
 
-def index_convert(image):
+
+def index_convert(image, lon, lat):
     dr = ''
     path = image.split("/")
     for p in path[:-1]:
@@ -20,7 +24,8 @@ def index_convert(image):
         # name of index func, name to save in file, contrast func
 
         # for every single index, that's what happen:
-        nonlocal img
+        nonlocal img, date
+        global data
         print('index: ' + name)
         index_col = img.copy().convert('HSV')  # creating hsv picture (h means color, i'll use it later)
 
@@ -131,6 +136,17 @@ def index_convert(image):
         print(min(index_sum))
         print(sum(index_sum) / len(index_sum))
         print(max(index_sum))
+
+        data = open('index_convert.csv', 'a')
+        data.write(str(date) + ';' +
+                   str(lon) + ';' +
+                   str(lat) + ';' +
+                   str(name) + ';' +
+                   str(min(index_sum)) + ';' +
+                   str(sum(index_sum) / len(index_sum)) + ';' +
+                   str(max(index_sum)) + ';' + '\n')
+
+        data.close()
 
         dane = [name, (min(index_sum), sum(index_sum) / len(index_sum), max(index_sum))]
         return dane

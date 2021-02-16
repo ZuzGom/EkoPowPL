@@ -1,13 +1,9 @@
 # Converting image to NDVI colored scale
 
 from PIL import Image  # Pillow library
-import os
 
 
-p = "C:\\Projekty\\PicMatPlot\\"  # path to my test images folder
-
-
-def if_black(image):
+def if_black(image):  # path to image
     img = Image.open(image)
     img = img.convert('RGB')
     w, h = img.size
@@ -26,10 +22,10 @@ def if_black(image):
         return True
 
 
-def check_clouds(image):
-    dr = os.path.dirname(image)
-    dr += '/indicies/'
-    date = '.'.join(os.path.basename(image).split('.')[:-1])
+def check_clouds(image):  # path to image
+    counter = 0
+    path = image.split("/")[-1]
+    date = '.'.join(path.split('.')[:-1])  # image name
     img = Image.open(image)
     # I get height and width of the image
     w, h = img.size
@@ -46,23 +42,22 @@ def check_clouds(image):
     px_r = red.load()  # and hsv one
     px_g = green.load()
     px_o = out.load()
-    index_sum = []  # list of every pixel's index
-
-    # checking every single pixel
 
     for X in range(0, w):  # width
         for Y in range(0, h):  # height
             pixel_rgb = img_rgb.getpixel((X, Y))  # Get pixel's RGB values
 
             R, G, B = pixel_rgb
+
             r = (R-120)*2
             g = (G-120)*2
             b = (B-120)*2
-            o = (b - g) * 5
-            if o < 0:
-                o = 0
+            o = (b - g) * 5  # 0=0 CHMURY NIEMA o=255 JEST
+            # to jednak nienajlepszy sposób (wariuje dla wody chociażby)
+            # tak czy inaczej, Kamil jeśli to czytasz, możesz zrobić jakąkolwiek funkcję która sprawdza stężenie chmur
+            # może być taka która liczy to co wyżej plus zwykłe białe piksele
+            # i jak jest drastyczna różnica to powyższe ignoruje
 
-            # ~via Kuba Frączek
             brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
 
             if brightness > 130:
@@ -71,6 +66,8 @@ def check_clouds(image):
                 px_r[X, Y] = (r, r, r)
                 px_g[X, Y] = (g, g, g)
                 px_o[X, Y] = (b, b, b, o)
+                counter += 1
+                # transparentność "o" to miara ilości chmury, b b b sprawia, że wygląda to ładnie
                 if o < 0:
                     px_o[X, Y] = (o, o, o, 0)
             else:
@@ -78,47 +75,17 @@ def check_clouds(image):
                 px_r[X, Y] = (0, 0, 0)
                 px_g[X, Y] = (0, 0, 0)
                 px_o[X, Y] = (0, 0, 0, 0)
-                # one picture in GRAYSCALE (r +b +g equals gray (or white (or black)))
-                # and one picture in HSV, in which H is index, so index value is one color of the spectrum
-                # i figured it out by myself ngl
-    print(px_o[100,100])
-    blue.save(p + "rgb\\" + date + "_blue.jpg")
-    green.save(p + "rgb\\" + date + "_green.jpg")
-    red.save(p + "rgb\\" + date + "_red.jpg")
-    out.save(p + "rgb\\" + date + "_zout.png")
-    img_rgb.save(p + "rgb\\" + str(i) + "_org.jpg")
 
+    cp_clouds = counter / (w * h) * 100
 
-        # print('zdjęcie nr. ' + str(i))  # Warum hier???
-
-        # ####### skala ######
-
-
-
-# #####################_MAIN_######################
-
-# moje obrazy testowe są w formacie img1, img2... imgn więc...
-# jesli chce przetestowac jeden z nich, to wpisuje jego liczbe i mam na wyjsciu ladnie zapisanie 1_ndvi, 1_hsv itd...
-# zmodyfikowałam funkcję na tyle że w mainie wystarczy tylko otworzyć obraz
-
-num = [2, 4, 15]
-
-for i in num:
-    #im = Image.open(p + "imgtest\\img15.jfif")
-    image = (p + "imgtest\\img" + str(i) + ".jpg")
-
-    # I get average and maximum NDVI value, ndvi pic and color pic
-    rgb_convert(image)
-    # I changed it, so index_convert is a separated function, which can be called on any picture
-
-      # saves original picture to compare
-
-# funkcja działa wolno niestety, będziemy musieli zdecydować ktore zdjecie zostawimy albo nie wykonywac tego na stacji
-# na miejszych zdjęciach 480/640 wykonuje się za to dosyć szybko
-# można robić jedno zdjecie poglądowe w niskiej jakości, a jak będzie wysoka srednia ndvi to zdrobic drugie w lepszej
-# i wtedy je analizować na ziemi
-'''
-index_convert('image\\image.jpg')
-index_convert('image\\image (1).jpg')
-'''
-print('finish')
+    try:
+        blue.save("rgb/" + date + "_blue.jpg")
+        green.save("rgb/" + date + "_green.jpg")
+        red.save("rgb/" + date + "_red.jpg")
+        out.save("rgb/" + date + "_zout.png")
+    except FileNotFoundError:
+        blue.save(date + "_blue.jpg")
+        green.save(date + "_green.jpg")
+        red.save(date + "_red.jpg")
+        out.save(date + "_zout.png")
+    return cp_clouds

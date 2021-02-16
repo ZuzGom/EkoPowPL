@@ -93,7 +93,7 @@ def analysis():
 def taking_serie():
     global amount_serie
     for j in range(10):
-        high_def(image/"serie" + str(amount_serie) + "_" + str(j) + ".jpg")
+        high_def("image/serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
     amount_serie += 1
 

@@ -97,7 +97,7 @@ def taking_serie():
     sHat.hourglass_s4()
 
 
-last = datetime.now() - timedelta(minutes=5)
+last = datetime.now() - timedelta(minutes=10)
 
 while True:
     if now > start + timedelta(minutes=165):

@@ -93,13 +93,13 @@ def analysis():
 def taking_serie():
     global amount_serie
     for j in range(10):
-        high_def("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
+        high_def("image/serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
     amount_serie += 1
 
 
 thread1 = Thread(target=analysis(), args=(1,))
-thread2 = Thread(target=taking_serie(), args=(1,))
+thread2 = Thread(target=taking_serie(), args=(2,))
 
 last = datetime.now() - timedelta(minutes=5)
 

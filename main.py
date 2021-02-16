@@ -81,7 +81,12 @@ def taking_serie(amount_serie):
         high_def(("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
 
-    first_i+=1;
+    amount_serie += -1
+
+    #Nie wiem do czego to coś
+    #first_i+=1
+
+
 
 thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
 thread2 = Thread(target=taking_serie(amount_serie), args=(1,))
@@ -107,7 +112,6 @@ while True:
             if ilosc_serii < 9
                 if check_clouds(low) >  15
                     thread2.start()
-                    amount_serie+=1
 
         else:
             os.remove(low)

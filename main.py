@@ -84,10 +84,8 @@ def analysis():
     dane = index_convert(name, ln, lt)
     print(dane)
     sHat.hourglass_s2()
-
-    sHat.hourglass_s3()
     lightIntensity(name, dat)
-    sHat.hourglass_s4()
+    sHat.hourglass_s3()
 
 
 def taking_serie():
@@ -96,6 +94,8 @@ def taking_serie():
         high_def("image/serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
     amount_serie += 1
+    sHat.hourglass_s4()
+
 
 last = datetime.now() - timedelta(minutes=5)
 

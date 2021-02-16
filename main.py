@@ -86,8 +86,6 @@ def taking_serie(amount_serie):
     #Nie wiem do czego to coś
     #first_i+=1
 
-
-
 thread1 = Thread(target=analysis_zuz_fra(), args=(1,))
 thread2 = Thread(target=taking_serie(amount_serie), args=(1,))
 

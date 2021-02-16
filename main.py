@@ -97,10 +97,6 @@ def taking_serie():
         sleep(10)
     amount_serie += 1
 
-
-thread1 = Thread(target=analysis)
-thread2 = Thread(target=taking_serie)
-
 last = datetime.now() - timedelta(minutes=5)
 
 while True:
@@ -117,9 +113,9 @@ while True:
         low_def(low)
         if not if_black(low):
             if amount_serie < 9:
-                thread1.start()
+                Thread(target=analysis).start()
                 if check_clouds(low, 'n') > 15:
-                    thread2.start()
+                    Thread(target=taking_serie()).start()
             else:
                 analysis()
         else:

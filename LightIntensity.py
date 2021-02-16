@@ -18,12 +18,25 @@ reference: https://en.wikipedia.org/wiki/Relative_luminance
 from PIL import Image
 import datetime
 
-def lightIntensity(name ,date):
+
+data = open('LightIntensity.csv', 'w')
+data.write("Datetime: ;"
+           "Date: ;"
+           "AverageRelativeLuminanceWithoutWindowBorders:    ;"
+           "AverageWaterRelativeLuminance: ;"
+           "AverageCloudsRelativeLuminance: ;"
+           "AverageLandRelativeLuminance \n")
+data.close()
+
+
+def lightIntensity(name, date):
 
     """
     Calculates Relative luminance for clouds and snow, water, land.
     Outputs data and saves it to '.csv' file. This data will be used for analysis on Earth.
     """
+
+    global data
 
     img = Image.open(name)
     img = img.convert('RGB')
@@ -127,8 +140,6 @@ def lightIntensity(name ,date):
                 AverageRelativeLuminance2 += RelativeLuminance
                 AverageRelativeLuminance2pixels += 1
 
-
-
             # imgWater opened in RGB
             pixelRGBWater = imgWater.getpixel((X, Y))  # Get pixel RGB values
             Rw, Gw, Bw = pixelRGBWater  # divide RBG into single variables
@@ -138,8 +149,9 @@ def lightIntensity(name ,date):
                 WaterRelativeLuminance += RelativeLuminance
                 WaterPixels += 1
 
-            # separetes clouds and land, then gathers information used for calculating relative luminance for both of them
-            if R>=200:
+            # separetes clouds and land, then gathers information
+            # used for calculating relative luminance for both of them
+            if R >= 200:
                 CloudsRelativeLuminance += RelativeLuminance
                 CloudsPixels += 1
             else:
@@ -151,26 +163,17 @@ def lightIntensity(name ,date):
         AverageRelativeLuminance2 /= AverageRelativeLuminance2pixels
 
     if WaterPixels > 0:
-        AverageWaterRelativeLuminance =  WaterRelativeLuminance / WaterPixels
-
+        AverageWaterRelativeLuminance = WaterRelativeLuminance / WaterPixels
 
     if CloudsPixels > 0:
-        AverageCloudsRelativeLuminance = CloudsRelativeLuminance /  CloudsPixels
-
+        AverageCloudsRelativeLuminance = CloudsRelativeLuminance / CloudsPixels
 
     if LandPixels > 0:
         AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
 
-
     imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 
     data = open('LightIntensity.csv', 'a')
-    data.writelines("Datetime: ;"
-                    "Date: ;"
-                    "AverageRelativeLuminanceWithoutWindowBorders:    ;"
-                    "AverageWaterRelativeLuminance: ;"
-                    "AverageCloudsRelativeLuminance: ;"
-                    "AverageLandRelativeLuminance \n")
     data.write(str(imageDatetime)+';' +
                str(date) + ';' +
                str(AverageRelativeLuminance2) + ';' +

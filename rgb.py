@@ -1,4 +1,4 @@
-# Converting image to NDVI colored scale
+# RGB based functions
 
 from PIL import Image  # Pillow library
 
@@ -31,15 +31,15 @@ def check_clouds(image, c):  # path to image
     w, h = img.size
 
     img_rgb = img.convert('RGB')
-    blue = img_rgb.copy()  # creating copy for black-white index
+    blue = img_rgb.copy()
     red = img_rgb.copy()
     green = img_rgb.copy()
     img_rgb = img.convert('RGBA')
     out = img_rgb.copy()
     img_rgb = img.convert('RGB')
 
-    px_b = blue.load()  # I get pixel information of b-w picture
-    px_r = red.load()  # and hsv one
+    px_b = blue.load()
+    px_r = red.load()
     px_g = green.load()
     px_o = out.load()
 

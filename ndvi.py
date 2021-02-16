@@ -3,7 +3,7 @@
 from PIL import ImageDraw, ImageFont, Image  # Pillow library
 
 data = open('index_convert.csv', 'w')
-data.writelines("Name: ;Longtitude: ; Latitude: ;Index name: ;Maximum: ;Average: ;Minimum: \n")
+data.write("Name: ;Longtitude: ; Latitude: ;Index name: ;Maximum: ;Average: ;Minimum: \n")
 data.close()
 
 

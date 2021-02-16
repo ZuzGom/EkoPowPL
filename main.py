@@ -84,24 +84,20 @@ def analysis():
     dane = index_convert(name, ln, lt)
     print(dane)
     sHat.hourglass_s2()
-
-    sHat.hourglass_s3()
     lightIntensity(name, dat)
-    sHat.hourglass_s4()
+    sHat.hourglass_s3()
 
 
 def taking_serie():
     global amount_serie
     for j in range(10):
-        high_def("serie" + str(amount_serie) + "_" + str(j) + ".jpg")
+        high_def("image/serie" + str(amount_serie) + "_" + str(j) + ".jpg")
         sleep(10)
     amount_serie += 1
+    sHat.hourglass_s4()
 
 
-thread1 = Thread(target=analysis(), args=(1,))
-thread2 = Thread(target=taking_serie(), args=(1,))
-
-last = datetime.now() - timedelta(minutes=5)
+last = datetime.now() - timedelta(minutes=10)
 
 while True:
     if now > start + timedelta(minutes=165):
@@ -117,9 +113,9 @@ while True:
         low_def(low)
         if not if_black(low):
             if amount_serie < 9:
-                thread1.start()
-                if check_clouds(low) > 15:
-                    thread2.start()
+                Thread(target=analysis).start()
+                if check_clouds(low, 'n') > 15:
+                    Thread(target=taking_serie()).start()
             else:
                 analysis()
         else:

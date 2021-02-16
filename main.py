@@ -99,7 +99,7 @@ def taking_serie():
 
 
 thread1 = Thread(target=analysis(), args=(1,))
-thread2 = Thread(target=taking_serie(), args=(1,))
+thread2 = Thread(target=taking_serie(), args=(2,))
 
 last = datetime.now() - timedelta(minutes=5)
 

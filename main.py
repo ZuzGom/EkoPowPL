@@ -26,6 +26,7 @@ sys.stdout = open('EkoPowPL.log', 'w')
 
 start = datetime.now()
 
+sHat.clear()
 sHat.welcomeMessage()
 
 path = sys.path

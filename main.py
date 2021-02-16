@@ -118,7 +118,7 @@ while True:
         if not if_black(low):
             if amount_serie < 9:
                 thread1.start()
-                if check_clouds(low) > 15:
+                if check_clouds(low, 'n') > 15:
                     thread2.start()
             else:
                 analysis()

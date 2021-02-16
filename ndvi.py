@@ -225,7 +225,7 @@ def index_convert(image, lon, lat):
     
     '''
     out.append(operation(Code.ndwi, 'ndwi', con(0.2, 550)))
-    operation(Code.ndvi, 'ndvi', con(0.35, 300))
-    operation(Code.rgi, 'rgi', con(-0.6, 200))
+    out.append(operation(Code.ndvi, 'ndvi', con(0.35, 300)))
+    out.append(operation(Code.rgi, 'rgi', con(-0.6, 200)))
 
     return out

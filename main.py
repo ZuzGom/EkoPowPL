@@ -107,8 +107,8 @@ while True:
         if not if_black(low):
             thread1.start()
 
-            if ilosc_serii < 9
-                if check_clouds(low) >  15
+            if ilosc_serii < 9:
+                if check_clouds(low) >  15:
                     thread2.start()
 
         else:

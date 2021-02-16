@@ -76,17 +76,16 @@ def check_clouds(image, c):  # path to image
                     px_r[X, Y] = (0, 0, 0)
                     px_g[X, Y] = (0, 0, 0)
                     px_o[X, Y] = (0, 0, 0, 0)
-
-            try:
-                blue.save("rgb/" + date + "_blue.jpg")
-                green.save("rgb/" + date + "_green.jpg")
-                red.save("rgb/" + date + "_red.jpg")
-                out.save("rgb/" + date + "_zout.png")
-            except FileNotFoundError:
-                blue.save(date + "_blue.jpg")
-                green.save(date + "_green.jpg")
-                red.save(date + "_red.jpg")
-                out.save(date + "_zout.png")
+                try:
+                    blue.save("rgb/" + date + "_blue.jpg")
+                    green.save("rgb/" + date + "_green.jpg")
+                    red.save("rgb/" + date + "_red.jpg")
+                    out.save("rgb/" + date + "_zout.png")
+                except FileNotFoundError:
+                    blue.save(date + "_blue.jpg")
+                    green.save(date + "_green.jpg")
+                    red.save(date + "_red.jpg")
+                    out.save(date + "_zout.png")
             else:
                 if brightness > 130:
                     counter += 1

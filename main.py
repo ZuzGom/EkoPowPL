@@ -98,8 +98,8 @@ def taking_serie():
     amount_serie += 1
 
 
-thread1 = Thread(target=analysis(), args=(1,))
-thread2 = Thread(target=taking_serie(), args=(2,))
+thread1 = Thread(target=analysis)
+thread2 = Thread(target=taking_serie)
 
 last = datetime.now() - timedelta(minutes=5)
 

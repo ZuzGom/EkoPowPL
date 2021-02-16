@@ -105,7 +105,6 @@ while True:
             thread1.start()
 
             if ilosc_serii < 9
-                #Nie wiem co wstawic jako argument
                 if check_clouds(low) >  15
                     thread2.start()
                     amount_serie+=1

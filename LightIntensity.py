@@ -152,15 +152,15 @@ def lightIntensity(name ,date):
 
     if WaterPixels > 0:
         AverageWaterRelativeLuminance =  WaterRelativeLuminance / WaterPixels
-        print(AverageWaterRelativeLuminance)
+
 
     if CloudsPixels > 0:
         AverageCloudsRelativeLuminance = CloudsRelativeLuminance /  CloudsPixels
-        print(AverageCloudsRelativeLuminance)
+
 
     if LandPixels > 0:
         AverageLandRelativeLuminance = LandRelativeLuminance / LandPixels
-        print(AverageLandRelativeLuminance)
+
 
     imageDatetime = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
 

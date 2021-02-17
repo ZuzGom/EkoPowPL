@@ -14,9 +14,8 @@ import sHat
 from kordy import isstrack
 from ndvi import index_convert
 from rgb import if_black, check_clouds
-# funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 84)
-# początek dużej pętli
-# sys.stdout = open('EkoPowPL.log', 'w')
+
+sys.stdout = open('EkoPowPL.log', 'w')
 
 start = datetime.now()
 sHat.clear()
@@ -132,4 +131,4 @@ except Exception as e:
     print('No video for us')
     print(type(e), e)
 sHat.clear()
-#sys.stdout.close()
+sys.stdout.close()

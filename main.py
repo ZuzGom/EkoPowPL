@@ -16,7 +16,7 @@ from ndvi import index_convert
 from rgb import if_black, check_clouds
 # funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 84)
 # początek dużej pętli
-sys.stdout = open('EkoPowPL.log', 'w')
+#sys.stdout = open('EkoPowPL.log', 'w')
 start = datetime.now()
 sHat.clear()
 sHat.welcomeMessage()
@@ -64,6 +64,7 @@ def analysis():
     name = 'image/' + dat + '.jpg'
     high_def(name)
     try:
+        print('dziala')
         sHat.hourglass_s1()
         dane = index_convert(low, ln, lt)
         print(dane)
@@ -71,6 +72,7 @@ def analysis():
         lightIntensity(low, dat)
         sHat.hourglass_s3()
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
+            print('super dziala')
             for _ in range(3):
                 name = 'image/' + getn() + '.jpg'
                 high_def(name)
@@ -131,4 +133,4 @@ except Exception as e:
     print('No video for us')
     print(type(e), e)
 sHat.clear()
-sys.stdout.close()
+#sys.stdout.close()

@@ -7,7 +7,6 @@
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime, timedelta
-from threading import Thread
 import sys
 import os
 

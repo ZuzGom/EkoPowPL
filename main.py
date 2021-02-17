@@ -68,17 +68,17 @@ def film_hd(s):
 # To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
 
 
-def analysis(lw):
+def analysis():
     global ln, lt
     dat = getn()
     name = 'image/' + dat + '.jpg'
     high_def(name)
     try:
         sHat.hourglass_s1()
-        dane = index_convert(lw, ln, lt)
+        dane = index_convert(low, ln, lt)
         print(dane)
         sHat.hourglass_s2()
-        lightIntensity(lw, dat)
+        lightIntensity(low, dat)
         sHat.hourglass_s3()
 
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
@@ -119,11 +119,11 @@ while True:
         low_def(low)
         if not if_black(low):
             if amount_serie < 9:
-                Thread(target=analysis(low)).start()
+                Thread(target=analysis).start()
                 if check_clouds(low, 'n') > 15:
-                    Thread(target=taking_serie()).start()
+                    Thread(target=taking_serie).start()
             else:
-                analysis(low)
+                analysis()
         else:
             black = datetime.now()
             os.remove(low)
@@ -142,7 +142,7 @@ try:
         film_hd(600)
 except Exception as e:
     print('No video for us')
-    print(e)
+    print(type(e), e)
 
 
 sHat.clear()

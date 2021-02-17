@@ -89,7 +89,7 @@ def analysis():
                 sleep(10)
 
     except Exception as e:
-        print(e)
+        print(type(e), e)
         print('Gratulacje')
 
 

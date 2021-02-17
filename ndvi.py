@@ -59,6 +59,7 @@ def index_convert(image, lon, lat):
                     # and one picture in HSV, in which H is index, so index value is one color of the spectrum
 
         # ####### scale ######
+        '''
 
         s = int((h - 100) / 200)  # scale of the scale (I check how many times it could fit)
         if s > 1:
@@ -111,7 +112,7 @@ def index_convert(image, lon, lat):
         za.text((w - 7 - s * 30, hh + 4 * ss),  ".2",   (255, 255, 255), font=font)
         za.text((w - 7 - s * 30, hh + 5 * ss),  ".3",   (255, 255, 255), font=font)
         za.text((w - 7 - s * 30, hh + 6 * ss),  ".4",   (255, 255, 255), font=font)
-
+        '''
         '''
         what scale does:
         - fits in any picture above 300 px height

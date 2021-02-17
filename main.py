@@ -86,12 +86,14 @@ def analysis(lw):
         sHat.hourglass_s2()
         lightIntensity(lw, dat)
         sHat.hourglass_s3()
+
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
             for _ in range(3):
                 name = 'image/' + getn() + '.jpg'
                 high_def(name)
                 index_convert(name, ln, lt)
                 sleep(10)
+
     except Exception as e:
         print(e)
         print('Gratulacje')
@@ -107,9 +109,10 @@ def taking_serie():
 
 
 last = datetime.now() - timedelta(minutes=10)
-
+black = datetime.now()
 while True:
-    if now > start + timedelta(minutes=165) or (now > black + timedelta(minutes=165) and start + timedelta(minutes=100)):
+    if now > start + timedelta(minutes=165) or \
+            (now > black + timedelta(minutes=30) and now > start + timedelta(minutes=100)):
         break
     if now > last + timedelta(minutes=5):
         last = datetime.now()

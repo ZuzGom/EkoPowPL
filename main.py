@@ -3,34 +3,26 @@
 # AstroPi competition 2020/2021
 # Team Members: Zuzanna Gomuła, Jakub Frączek, Jakub Batycki, Kamil Kras, Bartosz Królikowski, Wojciech Lupa
 # Teachers: Wincenty Skwarek
-
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime, timedelta
+from threading import Thread
 import sys
 import os
-
 from LightIntensity import lightIntensity
 import sHat
 from kordy import isstrack
 from ndvi import index_convert
 from rgb import if_black, check_clouds
-
-
 # funkcja sprawdzajaca czy zdjecie jest czarne gotowa (linia 84)
 # początek dużej pętli
-
 sys.stdout = open('EkoPowPL.log', 'w')
-
 start = datetime.now()
-
 sHat.clear()
 sHat.welcomeMessage()
-
 path = sys.path
 for x in path:
     print(x)
-
 camera = PiCamera()
 now = datetime.now()
 amount_serie = 1
@@ -64,9 +56,8 @@ def film_hd(s):
     camera.wait_recording(s)
     camera.stop_recording()
 
+
 # To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
-
-
 def analysis():
     global ln, lt
     dat = getn()
@@ -79,7 +70,6 @@ def analysis():
         sHat.hourglass_s2()
         lightIntensity(low, dat)
         sHat.hourglass_s3()
-
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
             for _ in range(3):
                 name = 'image/' + getn() + '.jpg'
@@ -104,6 +94,7 @@ def taking_serie():
 last = datetime.now() - timedelta(minutes=10)
 black = datetime.now()
 while True:
+    now = datetime.now()
     if now > start + timedelta(minutes=165) or \
             (now > black + timedelta(minutes=30) and now > start + timedelta(minutes=100)):
         break
@@ -113,25 +104,22 @@ while True:
         lon, lat, country = isstrack()
         date = getn()
         print(date)
-
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-            analysis()
             if amount_serie < 9:
+                Thread(target=analysis).start()
                 if check_clouds(low, 'n') > 15:
-                    taking_serie()
+                    Thread(target=taking_serie).start()
+            else:
+                analysis()
         else:
             black = datetime.now()
             os.remove(low)
             print('Noc')
             sHat.nightTime()
-
         # miejsce na zapisanie danych
-
 # till the end less that 15 minutes left
-
-
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)
 try:
@@ -140,7 +128,5 @@ try:
 except Exception as e:
     print('No video for us')
     print(type(e), e)
-
-
 sHat.clear()
 sys.stdout.close()

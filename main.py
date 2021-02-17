@@ -4,7 +4,6 @@
 # Team Members: Zuzanna Gomuła, Jakub Frączek, Jakub Batycki, Kamil Kras, Bartosz Królikowski, Wojciech Lupa
 # Teachers: Wincenty Skwarek
 
-import psutil
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime, timedelta
@@ -32,11 +31,6 @@ sHat.welcomeMessage()
 path = sys.path
 for x in path:
     print(x)
-
-bytes_avail = psutil.disk_usage(path[0]).free
-megabytes_avail = bytes_avail / 1024 / 1024
-print('Space left (MB): ')
-print(megabytes_avail)
 
 camera = PiCamera()
 now = datetime.now()
@@ -140,15 +134,11 @@ while True:
 
 # till the end less that 15 minutes left
 
-bytes_avail = psutil.disk_usage(path[0]).free
-megabytes_avail = bytes_avail / 1024 / 1024
-print('Space left (MB): ')
-print(megabytes_avail)
 
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)
 try:
-    if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:
+    if now < start + timedelta(minutes=168) and not if_black(low):
         film_hd(600)
 except Exception as e:
     print('No video for us')

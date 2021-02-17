@@ -74,18 +74,27 @@ def film_hd(s):
 # To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
 
 
-def analysis():
+def analysis(lw):
     global ln, lt
     dat = getn()
     name = 'image/' + dat + '.jpg'
     high_def(name)
-
-    sHat.hourglass_s1()
-    dane = index_convert(name, ln, lt)
-    print(dane)
-    sHat.hourglass_s2()
-    lightIntensity(name, dat)
-    sHat.hourglass_s3()
+    try:
+        sHat.hourglass_s1()
+        dane = index_convert(lw, ln, lt)
+        print(dane)
+        sHat.hourglass_s2()
+        lightIntensity(lw, dat)
+        sHat.hourglass_s3()
+        if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
+            for _ in range(3):
+                name = 'image/' + getn() + '.jpg'
+                high_def(name)
+                index_convert(name, ln, lt)
+                sleep(10)
+    except Exception as e:
+        print(e)
+        print('Gratulacje')
 
 
 def taking_serie():
@@ -100,7 +109,7 @@ def taking_serie():
 last = datetime.now() - timedelta(minutes=10)
 
 while True:
-    if now > start + timedelta(minutes=165):
+    if now > start + timedelta(minutes=165) or (now > black + timedelta(minutes=165) and start + timedelta(minutes=100)):
         break
     if now > last + timedelta(minutes=5):
         last = datetime.now()
@@ -113,12 +122,13 @@ while True:
         low_def(low)
         if not if_black(low):
             if amount_serie < 9:
-                Thread(target=analysis).start()
+                Thread(target=analysis(low)).start()
                 if check_clouds(low, 'n') > 15:
                     Thread(target=taking_serie()).start()
             else:
-                analysis()
+                analysis(low)
         else:
+            black = datetime.now()
             os.remove(low)
             print('Noc')
             sHat.nightTime()
@@ -134,9 +144,13 @@ print(megabytes_avail)
 
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)
+try:
+    if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:
+        film_hd(600)
+except Exception as e:
+    print('No video for us')
+    print(e)
 
-if now < start + timedelta(minutes=168) and not if_black(low) and megabytes_avail > 300:
-    film_hd(600)
 
 sHat.clear()
 sys.stdout.close()

@@ -125,7 +125,7 @@ def index_convert(image, lon, lat):
             index_bw.save(dr + date + "_bw_" + name + ".jpg")  # saves picture in grayscale
             index_col = index_col.convert("RGB")
             index_col.save(dr + date + "_col_" + name + ".jpg")  # picture in color scale
-        except FileNotFoundError:
+        except (FileNotFoundError, OSError):
             index_bw.save(date + "_bw_" + name + ".jpg")  # saves picture in grayscale
             index_col = index_col.convert("RGB")
             index_col.save(date + "_col_" + name + ".jpg")  # picture in color scale
@@ -133,10 +133,6 @@ def index_convert(image, lon, lat):
         # print('worked')
 
         # max value, average, and min
-        print(min(index_sum))
-        print(sum(index_sum) / len(index_sum))
-        print(max(index_sum))
-
         data = open('index_convert.csv', 'a')
         data.write(str(date) + ';' +
                    str(lon) + ';' +
@@ -229,3 +225,4 @@ def index_convert(image, lon, lat):
     out.append(operation(Code.rgi, 'rgi', con(-0.6, 200)))
 
     return out
+

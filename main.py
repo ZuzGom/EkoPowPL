@@ -120,7 +120,7 @@ while True:
             sHat.nightTime()
     sleep(1)
 
-        # miejsce na zapisanie danych
+    # miejsce na zapisanie danych
 # till the end less that 15 minutes left
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)

@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from threading import Thread
 import sys
 import os
+
 from LightIntensity import lightIntensity
 import sHat
 from kordy import isstrack
@@ -18,11 +19,14 @@ from rgb import if_black, check_clouds
 sys.stdout = open('EkoPowPL.log', 'w')
 
 start = datetime.now()
+
 sHat.clear()
 sHat.welcomeMessage()
 path = sys.path
+
 for x in path:
     print(x)
+
 camera = PiCamera()
 now = datetime.now()
 amount_serie = 1
@@ -52,12 +56,11 @@ def low_def(img):
 def film_hd(s):
     sHat.camera()
     camera.resolution = (1080, 1080)
-    camera.start_recording('video/' + getn() + '.h264')
+    camera.start_recording('image/video_' + getn() + '.h264')
     camera.wait_recording(s)
     camera.stop_recording()
 
 
-# To co Zuzia i Fraczek zrobili  w IF not_black ale na zyczenie Zuzi do funkcji to poszlo
 def analysis():
     global ln, lt
     dat = getn()
@@ -70,16 +73,16 @@ def analysis():
         sHat.hourglass_s2()
         lightIntensity(low, dat)
         sHat.hourglass_s3()
+
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:
-            print('super dziala')
             for _ in range(3):
                 name = 'image/' + getn() + '.jpg'
                 high_def(name)
                 index_convert(name, ln, lt)
                 sleep(10)
 
-    except Exception as e:
-        print(type(e), e)
+    except Exception as ex:
+        print(type(ex), ex)
 
 
 def taking_serie():
@@ -93,6 +96,8 @@ def taking_serie():
 
 last = datetime.now() - timedelta(minutes=10)
 black = datetime.now()
+
+
 while True:
     now = datetime.now()
     if now > start + timedelta(minutes=165) or \
@@ -116,11 +121,10 @@ while True:
         else:
             black = datetime.now()
             os.remove(low)
-            print('Noc')
+            print('Night')
             sHat.nightTime()
     sleep(1)
 
-    # miejsce na zapisanie danych
 # till the end less that 15 minutes left
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)

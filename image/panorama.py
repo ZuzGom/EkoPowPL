@@ -134,7 +134,7 @@ else:
         new1 = Image.open("new_" + names[i] + ".png")
         shift(i * p, i * q, new1)
 
-    # deletes all .png file
+    # deletes all .png files
     for x in names:
         os.remove("new_" + x + ".png")
 

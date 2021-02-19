@@ -2,33 +2,31 @@ from PIL import Image
 import glob
 import os
 import matplotlib.pyplot as plt
-
-cord = []  # to służy do zapisu koordynatów z nazwy pliku
-move = []  # a to do ich przesunięcia
+"""
+ This script will be used for merging photos into panorama, 
+ and will be run on Earth
+"""
+cord = []  # used for saving coordinates from file
+move = []  # used for moving coordinates
 c = -1  # counter
 
-# im.size niedziała - do naprawienia
 w = 1920
 h = 1080
-names = []  # nazwy plików
+names = []  # file names
 
-# mam to stąd:
-# https://pillow.readthedocs.io/en/stable/reference/Image.html
-
-# zdjęcia niech będą w formacie:
+# naming format:
 # gg.mm.ss_lat_long.jpg
-for infile in glob.glob("*.jpg"):  # czyta każde zdjęcie w lokalizacji o rozszerzeniu.jpg
+for infile in glob.glob("*.jpg"):  # reads every photo in script's localization, with .jpg extension
 
     file, ext = os.path.splitext(infile)
-    names.append(file)  # nazwy plików bez rozszerzenia, przydadzą się poźniej
+    names.append(file)  # file names without extensions
 
     img = Image.open(infile)
     w, h = img.size
-    im = img.copy()  # po co kopia? nie wiem
 
-    im = img.copy()  # po co kopia? nie wiem
+    im = img.copy()
     im = im.convert('RGBA')
-    '''
+
     # raz powstałe nie muszą się nadpisywać
     px = im.load()  # piksele im
     for X in range(0, w):  # width
@@ -39,23 +37,20 @@ for infile in glob.glob("*.jpg"):  # czyta każde zdjęcie w lokalizacji o rozsz
             if brightness < 50:  # jesli jest czarno, przeroczystość na maksa, niestety cienie chmur odpadają
                 px[X, Y] = (200, 200, 200, 0)
     im.save("new_" + file + ".png")  # nowe zdjęcie bez ramki
-    '''
+
 
     file = file.split('_')
     file = file[1:]
     file[0] = file[0].split('.')
-    cord.append(file)  # lista z kordami
-    print(im)  # czytam czy się wszystko udało
-    c += 1  # liczy ile zdjęć będzie łączonych (jaki musi być rozmiar wyniku)
+    cord.append(file)  # list with coordinates
+    print(im)
+    c += 1  # number of photos
 
 print(cord)
 for i in range(len(cord)):
     cord[i][0] = (int(cord[i][0][0]) * 3600 +
                   int(cord[i][0][1]) * 60 +
                   int(cord[i][0][2]))
-
-# skomentowałam to bo wywalał błąd
-
 
 for i in range(1, len(cord)):
     czas = cord[-i][0] - cord[-i - 1][0]

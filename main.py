@@ -65,7 +65,6 @@ def analysis():
         print(dane)
         sHat.hourglass_s2()
         lightIntensity(low, dat)
-        index_convert(name, ln, lt)
         sHat.hourglass_s3()
 
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:

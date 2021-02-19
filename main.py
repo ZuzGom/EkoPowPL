@@ -35,6 +35,7 @@ ln, lt = 0, 0
 
 def getn():  # creates name with current data
     global now, ln, lt
+    now = datetime.now()
     timest = now.strftime("%m.%d_%H.%M.%S_")
     ln, lt, cn = isstrack()
     timest += str(int(ln)) + '_' + str(int(lt)) + '_' + cn
@@ -63,6 +64,7 @@ def analysis():
         print(dane)
         sHat.hourglass_s2()
         lightIntensity(low, dat)
+        index_convert(name, ln, lt)
         sHat.hourglass_s3()
 
         if (dane[0][1][0]+dane[0][1][2]) < dane[0][1][1]:

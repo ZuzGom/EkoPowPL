@@ -115,9 +115,5 @@ while True:
             sHat.nightTime()
     sleep(1)
 
-# till the end less that 15 minutes left
-low = 'image/low_' + getn() + '.jpg'
-low_def(low)
-
 sHat.clear()
 sys.stdout.close()

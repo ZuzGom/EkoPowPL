@@ -104,9 +104,9 @@ while True:
         low = 'image/low_' + date + '.jpg'
         low_def(low)
         if not if_black(low):
-            if amount_serie < 9:
+            if amount_serie < 16:
                 Thread(target=analysis).start()
-                if check_clouds(low, 'n') > 15:
+                if check_clouds(low, 'n') > 17:
                     Thread(target=taking_serie).start()
             else:
                 analysis()

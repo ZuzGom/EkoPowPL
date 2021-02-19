@@ -52,15 +52,6 @@ def low_def(img):
     sHat.camera()
     camera.capture(img)
 
-
-def film_hd(s):
-    sHat.camera()
-    camera.resolution = (1080, 1080)
-    camera.start_recording('image/video_' + getn() + '.h264')
-    camera.wait_recording(s)
-    camera.stop_recording()
-
-
 def analysis():
     global ln, lt
     dat = getn()
@@ -100,7 +91,7 @@ black = datetime.now()
 
 while True:
     now = datetime.now()
-    if now > start + timedelta(minutes=165) or \
+    if now > start + timedelta(minutes=179)
             (now > black + timedelta(minutes=30) and now > start + timedelta(minutes=100)):
         break
     if now > last + timedelta(minutes=5):
@@ -128,11 +119,6 @@ while True:
 # till the end less that 15 minutes left
 low = 'image/low_' + getn() + '.jpg'
 low_def(low)
-try:
-    if now < start + timedelta(minutes=168) and not if_black(low):
-        film_hd(600)
-except Exception as e:
-    print('No video for us')
-    print(type(e), e)
+
 sHat.clear()
 sys.stdout.close()

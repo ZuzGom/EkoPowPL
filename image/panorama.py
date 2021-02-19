@@ -143,26 +143,14 @@ else:
     '''
     # przesunięcia takie same więc daje for
     for i in range(1, c + 1):
-        new1 = Image.open("new_" + names[i] + ".png")
-        if i == 4:
-            print('lol')
-            # przesuniecie(i * p, i * q, new1)
-            przesuniecie(i * p + 66, i * q + 18, new1)
-        else:
-            if i == 5:
-                przesuniecie(i * p + 58, i * q + 16, new1)
-            else:
-                if i == 6:
-                    przesuniecie(i * p + 66 - 37 + 104, i * q + 16 - 2 + 21, new1)
-                else:
-                    print('yo')
-                    przesuniecie(i * p, i * q, new1)
+        new1 = Image.open("new_" + names[i] + ".png")      
+        przesuniecie(i * p, i * q, new1)
 
-'''
+
 # można w tym miejscu usunąć wszystkie png
     for x in names:
         os.remove("new_" + x + ".png")
     print(new)
     wynik.save("wynik_new.png")
     print(wynik)
-'''
+

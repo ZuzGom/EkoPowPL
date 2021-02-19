@@ -3,6 +3,7 @@
 # AstroPi competition 2020/2021
 # Team Members: Zuzanna Gomuła, Jakub Frączek, Jakub Batycki, Kamil Kras, Bartosz Królikowski, Wojciech Lupa
 # Teachers: Wincenty Skwarek
+
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime, timedelta
@@ -16,16 +17,18 @@ from kordy import isstrack
 from ndvi import index_convert
 from rgb import if_black, check_clouds
 
+# collects output to the file
 sys.stdout = open('EkoPowPL.log', 'w')
 
 start = datetime.now()
 
 sHat.clear()
 sHat.welcomeMessage()
-path = sys.path
 
-for x in path:
-    print(x)
+#path = sys.path
+
+#for x in path:
+    #print(x)
 
 camera = PiCamera()
 now = datetime.now()
@@ -90,7 +93,7 @@ def taking_serie():
 last = datetime.now() - timedelta(minutes=10)
 
 
-while True:
+while True:  # main loop
     now = datetime.now()
     if now > start + timedelta(minutes=179):
         break

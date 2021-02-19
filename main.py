@@ -91,8 +91,7 @@ black = datetime.now()
 
 while True:
     now = datetime.now()
-    if now > start + timedelta(minutes=179)
-            (now > black + timedelta(minutes=30) and now > start + timedelta(minutes=100)):
+    if now > start + timedelta(minutes=179):
         break
     if now > last + timedelta(minutes=5):
         last = datetime.now()

@@ -2,9 +2,9 @@ from PIL import Image
 import glob
 import os
 import matplotlib.pyplot as plt
+
 """
- This script will be used for merging photos into panorama, 
- and will be run on Earth
+ This script merges photos into panorama and will be run on Earth
 """
 cord = []  # used for saving coordinates from file
 move = []  # used for moving coordinates
@@ -27,17 +27,15 @@ for infile in glob.glob("*.jpg"):  # reads every photo in script's localization,
     im = img.copy()
     im = im.convert('RGBA')
 
-    # raz powstałe nie muszą się nadpisywać
-    px = im.load()  # piksele im
+    px = im.load()
     for X in range(0, w):  # width
         for Y in range(0, h):  # height
             pixel_rgb = im.getpixel((X, Y))  # Get pixel's RGB values
             r, g, b, a = pixel_rgb
             brightness = (r + g + b) / 3
-            if brightness < 50:  # jesli jest czarno, przeroczystość na maksa, niestety cienie chmur odpadają
+            if brightness < 50:  # if there's black, makes pixel transparent, unfortunately, clouds shadows are included
                 px[X, Y] = (200, 200, 200, 0)
-    im.save("new_" + file + ".png")  # nowe zdjęcie bez ramki
-
+    im.save("new_" + file + ".png")  # new photo without frame
 
     file = file.split('_')
     file = file[1:]
@@ -53,10 +51,10 @@ for i in range(len(cord)):
                   int(cord[i][0][2]))
 
 for i in range(1, len(cord)):
-    czas = cord[-i][0] - cord[-i - 1][0]
-    if czas > 80000:
-        czas = 86400 - cord[-i][0] + cord[-i - 1][0]
-    move.append([czas,
+    time1 = cord[-i][0] - cord[-i - 1][0]
+    if time1 > 80000:
+        time1 = 86400 - cord[-i][0] + cord[-i - 1][0]
+    move.append([time1,
                  float(cord[-i][1]) - float(cord[-i - 1][1]),
                  float(cord[-i][2]) - float(cord[-i - 1][2])])
 move = move[::-1]
@@ -75,37 +73,41 @@ plt.plot(x, y, 'ro')
 # plt.axis([0, 10, 0, 10])
 # plt.show()
 
-p = 410  # przesunięcie x
-q = 90  # przesunięcie y
+p = 410  # x shift
+q = 90  # y shift
 # p = 350
 # q = 45
 size = (1920 + c * p + 500,
-        1080 + c * q + 200)  # c * p, bo tyle przesunięć ile zdjęć z założeniem że przesunięcie jest takie samo
+        1080 + c * q + 200)  # c * p, c * q, because we need as much shifts as number of photos
 print(size)
 
-wynik = Image.new('RGBA', size)  # zdjęcie końcowe
-wpx = wynik.load()  # piksele tegoż
+result = Image.new('RGBA', size)  # final photo
+wpx = result.load()  # final photo pixels
 try:
-    new = Image.open("new_" + names[0] + ".png")  # otwieram pierwszy png
+    new = Image.open("new_" + names[0] + ".png")  # opens first file with .png extension
 except IndexError:
-    print('brak zdjęć!')
+    print('no photos!')
 else:
-    # do wynikowego zdjęcia wpisuję pierwsze z nich
+    # inserts first photo to the final file
     for X in range(0, w):  # width
         for Y in range(0, h):  # height
             wpx[X, Y] = new.getpixel((X, Y))
 
-    wynik.save("wynik0_new.png")
+    result.save("result0_new.png")
 
 
-    def przesuniecie(a, b, new2):
+    def shift(a, b, new2):
+
+        """
+        Compares photo after shift with result
+        """
+
         print(a, b)
-        # funckja porównuje zdjęcie po przesunięciu z wynikiem
         for X in range(0, w):  # width
             for Y in range(0, h):  # height
                 try:
-                    p = wynik.getpixel((X + a, Y + b))  # wygląda to tak:
-                    # porównywanie nowego zdjęcia zaczyna się w miejscu wyniku po przsunięciu a,b
+                    p = result.getpixel((X + a, Y + b))
+                    # comparing begins in result place after a,b shift
                     p2 = new2.getpixel((X, Y))
                     r1, g1, b1, a1 = p
                     r2, g2, b2, a2 = p2
@@ -120,37 +122,22 @@ else:
                         else:
                             wpx[X + a, Y + b] = p2
 
-                except IndexError:  # błąd zawsze może się zdażyć
+                except IndexError:
                     p2 = new2.getpixel((X, Y))
                     wpx[X + a, Y + b] = p2
         print("save" + str(i))
-        wynik.save("panorama/wynik" + str(i) + "_new.png")
+        result.save("panorama/result" + str(i) + "_new.png")
 
 
-    '''
-    #peóby zabawy z czasem
-    past1 = 0
-    past2 = 1
-
-    for i in range(1, c+1):
-        new1 = Image.open("new_" + names[i] + ".png")
-        przesuniecie(past1 + int(move[i-1][0] * 31.7), past2 + int(move[i-1][0] * 7), new1)
-        past1 += int(move[i-1][0] * 31.5)
-        past2 += int(move[i-1][0] * 6.5)
-
-    przesuniecie(350, 45, new2)
-    przesuniecie(2*350, 2*45, new3)
-    '''
-    # przesunięcia takie same więc daje for
+    # shifts are the same, so it can be done by for loop
     for i in range(1, c + 1):
-        new1 = Image.open("new_" + names[i] + ".png")      
-        przesuniecie(i * p, i * q, new1)
+        new1 = Image.open("new_" + names[i] + ".png")
+        shift(i * p, i * q, new1)
 
-
-# można w tym miejscu usunąć wszystkie png
+    # deletes all .png file
     for x in names:
         os.remove("new_" + x + ".png")
-    print(new)
-    wynik.save("wynik_new.png")
-    print(wynik)
 
+    print(new)
+    result.save("result_new.png")
+    print(result)

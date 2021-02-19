@@ -53,11 +53,7 @@ def check_clouds(image, c):  # path to image
             r = (R - 120) * 2
             g = (G - 120) * 2
             b = (B - 120) * 2
-            o = (b - g) * 5  # 0=0 CHMURY NIEMA o=255 JEST
-            # to jednak nienajlepszy sposób (wariuje dla wody chociażby)
-            # tak czy inaczej, Kamil jeśli to czytasz, możesz zrobić jakąkolwiek funkcję która sprawdza stężenie chmur
-            # może być taka która liczy to co wyżej plus zwykłe białe piksele
-            # i jak jest drastyczna różnica to powyższe ignoruje
+            o = (b - g) * 5
 
             brightness = sum(pixel_rgb) / 3  # 0 is dark (black) and 255 is bright (white)
             if c == 'y':
@@ -68,7 +64,7 @@ def check_clouds(image, c):  # path to image
                     px_g[X, Y] = (g, g, g)
                     px_o[X, Y] = (b, b, b, o)
                     counter += 1
-                    # transparentność "o" to miara ilości chmury, b b b sprawia, że wygląda to ładnie
+                    # o's transparency is measure of cloud amount, b b b makes it look better
                     if o < 0:
                         px_o[X, Y] = (o, o, o, 0)
                 else:

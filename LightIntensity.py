@@ -38,11 +38,7 @@ def lightIntensity(name, date):
 
     global data
 
-    img = Image.open(name)
-    img = img.convert('RGB')
-
-    width = img.width
-    height = img.height
+    img = Image.open(name).convert('RGB')
 
     # creating copy, so it won't overwrite original picture
     imgWater = img.copy().convert('HSV')
@@ -78,16 +74,15 @@ def lightIntensity(name, date):
     - separating water form picture, using NDWI index
     """
 
-    for X in range(0, width):  # image width
-        for Y in range(0, height):  # image height
+    for X in range(0, img.width):  # image width
+        for Y in range(0, img.height):  # image height
 
             # Original image pixels
             pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
             R, G, B = pixelRGB  # divide RBG into sigle variables
 
             # Calculates RelativeLuminance
-            RelativeLuminance = (0.2126*R) + (0.7152*G) + (0.0722*B)
-            RelativeLuminance = int(RelativeLuminance)
+            RelativeLuminance = int((0.2126*R) + (0.7152*G) + (0.0722*B))
             AverageRelativeLuminance += RelativeLuminance
 
             # Calculates NDWI and casts it to 0-360
@@ -110,7 +105,7 @@ def lightIntensity(name, date):
     pixelsWater = imgWater.load()
 
     # calculating average Luminance of whole picture, AverageRelativeLuminance divided by total pixels
-    AverageRelativeLuminance /= width*height
+    AverageRelativeLuminance /= img.width*img.height
 
     """
     # Loop #2, responsible for:
@@ -119,16 +114,15 @@ def lightIntensity(name, date):
     # - separating window from the rest of the picture
     """
 
-    for X in range(0, width):  # image width
-        for Y in range(0, height):  # image height
+    for X in range(0, img.width):  # image width
+        for Y in range(0, img.height):  # image height
 
             # Original image pixels
             pixelRGB = img.getpixel((X, Y))  # Get pixel RGB values
             R, G, B = pixelRGB  # divide RBG into sigle variables
 
             # Calculates RelativeLuminance
-            RelativeLuminance = (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
-            RelativeLuminance = int(RelativeLuminance)
+            RelativeLuminance = int((0.2126 * R) + (0.7152 * G) + (0.0722 * B))
 
             # If Luminance of the pixel is less than average Luminance of whole picture divided by 3, it is window
 

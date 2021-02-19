@@ -60,11 +60,10 @@ def index_convert(image, lon, lat):
 
         # ####### scale ######
 
-
         s = int((h - 100) / 200)  # scale of the scale (I check how many times it could fit)
-        if s > 1:
-            s -= 1  # however its still to big, unless it would be too small to exist
 
+        if s > 2:
+            s -= 2  # however its still to big, unless it would be too small to exist
         end = s * 200 + 100
         beg = 100
 
@@ -75,8 +74,8 @@ def index_convert(image, lon, lat):
                 s -= 1
         if sum(index_sum) / len(index_sum) < -0.4:
             beg = 10
-            if s > 1:
-                s -= 1
+            if s > 2:
+                s -= 2
         try:
             font = ImageFont.truetype("DejaVuSansMono.ttf", 2 + s * 10)  # for linux
         except OSError:
@@ -226,4 +225,3 @@ def index_convert(image, lon, lat):
     out.append(operation(Code.rgi, 'rgi', con(-0.6, 200)))
 
     return out
-

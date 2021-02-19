@@ -49,9 +49,10 @@ def high_def(img):
 
 
 def low_def(img):
-    camera.resolution = (480, 320)
+    camera.resolution = (960, 640)
     sHat.camera()
     camera.capture(img)
+
 
 def analysis():
     global ln, lt
@@ -88,7 +89,6 @@ def taking_serie():
 
 
 last = datetime.now() - timedelta(minutes=10)
-black = datetime.now()
 
 
 while True:
@@ -111,7 +111,6 @@ while True:
             else:
                 analysis()
         else:
-            black = datetime.now()
             os.remove(low)
             print('Night')
             sHat.nightTime()

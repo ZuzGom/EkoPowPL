@@ -25,11 +25,6 @@ start = datetime.now()
 sHat.clear()
 sHat.welcomeMessage()
 
-#path = sys.path
-
-#for x in path:
-    #print(x)
-
 camera = PiCamera()
 now = datetime.now()
 amount_serie = 1

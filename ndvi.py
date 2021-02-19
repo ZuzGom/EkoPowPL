@@ -62,8 +62,8 @@ def index_convert(image, lon, lat):
 
         s = int((h - 100) / 200)  # scale of the scale (I check how many times it could fit)
 
-        if s > 2:
-            s -= 2  # however its still to big, unless it would be too small to exist
+        if s > 3:
+            s -= 3  # however its still to big, unless it would be too small to exist
         end = s * 200 + 100
         beg = 100
 

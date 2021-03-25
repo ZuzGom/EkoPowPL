@@ -1,3 +1,4 @@
 Nie bijcie, google drive mi maline wywala, facebook tez
 https://www.raspberrypi.org/forums/viewtopic.php?t=285868
 https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
+https://www.raspberrypi.org/documentation/linux/usage/users.md

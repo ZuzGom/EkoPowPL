@@ -6,3 +6,10 @@ https://www.raspberrypi.org/documentation/linux/usage/users.md
 wget https://download.teamviewer.com/download/linux/teamviewer-host_armhf.deb
 sudo apt-get -f install ./teamviewer-host_armhf.deb
 
+sudo apt-get install lsb lsb-core
+sudo wget https://www.vpn.net/installers/logmein-hamachi_2.1.0.174–1_armhf.deb
+sudo dpkg -i logmein-hamachi_2.1.0.174–1_armhf.deb
+sudo hamachi login
+sudo hamachi set-nick “YourNameHere”
+sudo hamachi attach hello@yoursite.com
+sudo update-rc.d logmein-hamachi defaults
